@@ -30,8 +30,9 @@ class Connect4:
             - Set the Winner to False
             - etc.
         """
+        self.board = np.zeros((8,7))
        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        #raise NotImplementedError(f"You need to write this code first")
 
     """
     Methods to be exposed to the API later on
@@ -68,8 +69,9 @@ class Connect4:
         Returns:
             board
         """
+        return self.board
         # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        #raise NotImplementedError(f"You need to write this code first")
 
 
     def check_move(self, column:int, player_Id:uuid.UUID) -> bool:
@@ -109,3 +111,6 @@ class Connect4:
         """    
         # TODO
         raise NotImplementedError(f"You need to write this code first")
+
+if __name__ == "__main__":
+    myGame = Connect4()

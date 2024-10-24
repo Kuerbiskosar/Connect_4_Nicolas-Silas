@@ -3,7 +3,6 @@
 from game import Connect4
 from player import Player
 
-
 class Coordinator_Local:
     """ 
     Coordinator for two Local players
@@ -41,5 +40,5 @@ class Coordinator_Local:
 if __name__ == "__main__":
     # Create a coordinator
     # play a game
-    # TODO
-    raise NotImplementedError(f"You need to write this code first")
+    Coordinator = Coordinator_Local
+    Coordinator.play()
