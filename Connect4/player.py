@@ -12,8 +12,6 @@ class Player(ABC):
         board_height (int): Number of Vertical Elements
     """
 
-    print('hello word')
-
     def __init__(self) -> None:
         self.id = uuid.uuid4()          # Assign a unique ID to the player
         self.icon:str = None            # Icon will be set later during player registration
@@ -30,6 +28,7 @@ class Player(ABC):
             str: The player's icon.
 
         """
+        
         raise NotImplementedError("Subclasses must implement 'register_in_game'")
 
     @abstractmethod
