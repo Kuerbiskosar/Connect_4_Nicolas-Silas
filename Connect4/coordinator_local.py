@@ -1,7 +1,7 @@
 
 
 from game import Connect4
-from player import Player
+from player_local import Player_Local
 
 class Coordinator_Local:
     """ 
@@ -21,8 +21,10 @@ class Coordinator_Local:
         """
         Initialize the Coordinator_Local with a Game and 2 Players
         """
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        self.game = Connect4()
+        self.player1 = Player_Local(self.game)
+        self.player2 = Player_Local(self.game)
+        #raise NotImplementedError(f"You need to write this code first")
     
 
     def play(self):

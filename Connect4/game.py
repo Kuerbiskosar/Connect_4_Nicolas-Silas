@@ -25,19 +25,21 @@ class Connect4:
         """ 
         Init a Connect 4 Game
             - Create an empty Board
-            - Create to (non - registered and empty) players.
+            - Create two (non - registered and empty) players.
             - Set the Turn Counter to 0
             - Set the Winner to False
             - etc.
         """
-        self.board = np.zeros((8,7))
-       # TODO
+        self.board = np.zeros((8, 7), dtype=int)  # Board 8x7 with zeros representing empty cells
+        self.players = {}  # Dictionary to map player UUID to icon
+        self.turn_counter = 0  # To keep track of whose turn it is
+        self.winner = None  # Holds the winner's ID when a win is detected
         #raise NotImplementedError(f"You need to write this code first")
 
     """
     Methods to be exposed to the API later on
     """
-    def get_status(self):
+    def get_status(self) -> tuple:
         """
         Get the game's status.
             - active player (id or icon)
@@ -58,8 +60,13 @@ class Connect4:
         Returns:
             icon:       Player Icon (or None if failed)
         """
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        icons = ["X", "O"]  # Set player icons
+        if len(self.players) < 2:
+            icon = icons[len(self.players)]
+            self.players[player_id] = icon
+            return icon
+        return None
+        #raise NotImplementedError(f"You need to write this code first")
 
 
     def get_board(self)-> np.ndarray:

@@ -20,9 +20,9 @@ class Player_Local(Player):
        
         """
         super().__init__()  # Initialize id and icon from the abstract Player class
-
-       # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        
+        self.icon = self.register_in_game()
+        #raise NotImplementedError(f"You need to write this code first")
 
     def register_in_game(self) -> str:
         """
@@ -31,8 +31,8 @@ class Player_Local(Player):
         Returns:
             str: The player's icon.
         """
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        return self.game.register_player(self.id)
+        #raise NotImplementedError(f"You need to write this code first")
 
     def is_my_turn(self) -> bool:
         """ 
