@@ -30,10 +30,10 @@ class Connect4:
             - Set the Winner to False
             - etc.
         """
-        self.board = np.zeros((8, 7), dtype=int)  # Board 8x7 with zeros representing empty cells
-        self.players = {}  # Dictionary to map player UUID to icon
-        self.turn_counter = 0  # To keep track of whose turn it is
-        self.winner = None  # Holds the winner's ID when a win is detected
+        self.board = np.zeros((8, 7), dtype=int)    # Board 8x7 with zeros representing empty cells
+        self.players = {}                           # Dictionary to map player UUID to icon
+        self.turn_counter = 0                       # To keep track of whose turn it is
+        self.winner = None                          # Holds the winner's ID when a win is detected
         #raise NotImplementedError(f"You need to write this code first")
 
     """
@@ -49,7 +49,7 @@ class Connect4:
         # TODO
         raise NotImplementedError(f"You need to write this code first")
 
-    def register_player(self, player_id:uuid.UUID)->str:
+    def register_player(self, player_id: uuid.UUID, icon: str, name: str) -> str:
         """ 
         Register a player with a unique ID
             Save his ID as one of the local players
@@ -60,10 +60,8 @@ class Connect4:
         Returns:
             icon:       Player Icon (or None if failed)
         """
-        icons = ["X", "O"]  # Set player icons
         if len(self.players) < 2:
-            icon = icons[len(self.players)]
-            self.players[player_id] = icon
+            self.players[player_id] = (icon, name)
             return icon
         return None
         #raise NotImplementedError(f"You need to write this code first")

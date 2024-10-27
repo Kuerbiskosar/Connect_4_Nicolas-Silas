@@ -14,7 +14,8 @@ class Player(ABC):
 
     def __init__(self) -> None:
         self.id = uuid.uuid4()          # Assign a unique ID to the player
-        self.icon:str = None            # Icon will be set later during player registration
+        self.icon = None                # Set during registration
+        self.name = ""                  # Player's name
 
         self.board_width:int = 8        # Set the width of the board
         self.board_height:int = 7       # Set the height of the board

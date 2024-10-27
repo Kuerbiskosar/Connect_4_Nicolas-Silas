@@ -35,7 +35,7 @@ class Coordinator_Local:
             and checking for a winner until the game concludes.
         """
         # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        #raise NotImplementedError(f"You need to write this code first")
 
 
 
@@ -43,3 +43,4 @@ if __name__ == "__main__":
     # Create a coordinator
     # play a game
     Coordinator = Coordinator_Local
+    Coordinator.play()
