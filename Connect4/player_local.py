@@ -22,7 +22,11 @@ class Player_Local(Player):
         super().__init__()  # Initialize id and icon from the abstract Player class
         self.game = game
         self.name = input("Enter your name: ")
-        self.icon = input(f"Enter your icon for {self.name}: ")
+        while True:
+            self.icon = input(f'Enter your icon for {self.name}:')
+            if len(self.icon) == 1:
+                break
+            print('Please enter ony one charakter as your icon.')
         self.register_in_game()
         #raise NotImplementedError(f"You need to write this code first")
 
