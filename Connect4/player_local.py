@@ -11,7 +11,7 @@ class Player_Local(Player):
     Local Player (uses Methods of the Game directly).
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, game:Connect4, **kwargs) -> None:
         """ 
         Initialize a local player.
             Must Implement all Methods from Abstract Player Class
@@ -22,8 +22,14 @@ class Player_Local(Player):
        
         """
         super().__init__()  # Initialize id and icon from the abstract Player class
-
-       # TODO
+        self.game = game
+        self.name = input("Enter your name: ")
+        while True:
+            self.icon = input(f'Enter your icon for {self.name}:')
+            if len(self.icon) == 1:
+                break
+            print('Please enter ony one charakter as your icon.')
+        self.register_in_game()
         #raise NotImplementedError(f"You need to write this code first")
 
     def register_in_game(self) -> str:
@@ -33,8 +39,8 @@ class Player_Local(Player):
         Returns:
             str: The player's icon.
         """
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        return self.game.register_player(self.id, self.icon, self.name)
+        #raise NotImplementedError(f"You need to write this code first")
 
     def is_my_turn(self) -> bool:
         """ 
