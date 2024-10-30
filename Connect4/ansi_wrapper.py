@@ -38,6 +38,10 @@ def clear_screen() -> None:
     """clear the entire screen in the Terminal"""
     print("\033[2J", end="")
 
+def set_cursorpos(x:int,y:int):
+    """moves the terminal cursor to the specified location"""
+    print(f"\033[{y};{x}H", end='')
+
 
 if __name__ == "__main__":
     #print("\033[\34;44mwell...")

@@ -18,7 +18,8 @@ class Player(ABC):
         self.name = ""                  # Player's name
 
         self.drop_position:int = 0      # the row in which the player places his move
-        self.board_width:int = 8        # Set the width of the board
+        #TODO: Make dependend of the game board (I want to be able to play classical 7x6 connect 4)
+        self.board_width:int = 8        # Set the width of the board 
         self.board_height:int = 7       # Set the height of the board
         
     @abstractmethod
