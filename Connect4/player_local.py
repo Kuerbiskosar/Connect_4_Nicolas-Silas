@@ -70,6 +70,9 @@ class Player_Local(Player):
         Returns:
             bool: True if it's the player's turn, False otherwise.
         """
+        if self.game.activeplayer == self.icon:
+            return True
+        else: return False
         # TODO
         raise NotImplementedError(f"You need to write this code first")
 
@@ -121,7 +124,7 @@ class Player_Local(Player):
             int: The column chosen by the player for the move.
         """
         while True:
-            self.visualize(self.game.board)
+            self.visualize()
             action = self.get_action()
             if action == Action.drop:
                 return self.drop_position
@@ -130,28 +133,25 @@ class Player_Local(Player):
             elif action == Action.left and self.drop_position > 0:
                 self.drop_position -=1
     
-    def visualize(self, board:np.ndarray, icon1:str="🟡", icon2:str="🔴", useAscii:bool=True) -> None:
+    def visualize(self) -> None:
         """
         Visualize the current state of the Connect 4 board by printing it to the console.
         """
-        # TODO things to condiser:
-        # importing the board as a list instead of a numpy array (that way remote players don't need to have it installed)
-        # TODO Remove emojis
-        emptyIcon = "🔘"
-        if useAscii:
-            emptyIcon = ansi_wrapper.colorprint(" ⬤ ",background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True, foreground_color=ansi_wrapper.TerminalColors.default)
-            icon1 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Yellow, background_color=ansi_wrapper.TerminalColors.Blue, background_bright = True)
-            icon2 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Red, background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True)
+        board = self.game.get_board()
+        emptyIcon = ansi_wrapper.colorprint(" ⬤ ",background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True, foreground_color=ansi_wrapper.TerminalColors.default)
+        icon1 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Yellow, background_color=ansi_wrapper.TerminalColors.Blue, background_bright = True)
+        icon2 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Red, background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True)
+
         width = len(board)
         height = len(board[0])
         output = ""
         # range from width (exclusive) to 0 (inclusive) because the board position 0,0 is at the bottom left
-        output_header = ["   "]*(width+1)
+        output_header = ["   "]*(self.game.width+1)
         output_header[self.drop_position] = ansi_wrapper.colorprint(" ↓ ",blink=True)
         output_header = ''.join(output_header)
         output += output_header + "\n"
         for y in range(height-1,-1,-1):
-            for x in range(width):
+            for x in range(self.game.width):
                 if board[x,y] == BoardIcon.empty.value:
                     output += emptyIcon
                 elif board[x,y] == BoardIcon.player1.value:
