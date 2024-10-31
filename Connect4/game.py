@@ -95,7 +95,7 @@ class Connect4:
         #raise NotImplementedError(f"You need to write this code first")
 
 
-    def check_move(self, column:int, player_Id:uuid.UUID) -> bool:
+    def check_move(self, column:int, icon:str) -> bool:
         """ 
         Check move of a certain player is legal
             If a certain player can make the requested move
@@ -104,8 +104,15 @@ class Connect4:
             col (int):      Selected Column of Coin Drop
             player (str):   Player ID 
         """
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        for i in range(len(self.board[column])):
+            if self.board[column][i] == '':
+                self.board[column][i] = icon
+                self.activeplayer = self.activeplayer*-1 + 1
+                self.turn_counter += 1
+                print(self.activeplayer)
+                return True
+        else:
+            return False
         
     """ 
     Internal Method (for Game Logic)

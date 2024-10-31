@@ -127,8 +127,9 @@ class Player_Local(Player):
             self.visualize()
             action = self.get_action()
             if action == Action.drop:
+                self.game.check_move(self.drop_position, self.icon)
                 return self.drop_position
-            elif action == Action.right and self.drop_position < self.board_width-1:
+            elif action == Action.right and self.drop_position < self.game.width-1:
                 self.drop_position += 1
             elif action == Action.left and self.drop_position > 0:
                 self.drop_position -=1
