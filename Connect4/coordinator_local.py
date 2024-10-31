@@ -21,7 +21,7 @@ class Coordinator_Local:
         """
         Initialize the Coordinator_Local with a Game and 2 Players
         """
-        self.game = Connect4()
+        self.game = Connect4(8,7)
         self.player1 = Player_Local(self.game)
         self.player2 = Player_Local(self.game)
         #raise NotImplementedError(f"You need to write this code first")
@@ -34,6 +34,10 @@ class Coordinator_Local:
             This method handles player registration, turn management, 
             and checking for a winner until the game concludes.
         """
+        while True:
+            if self.player1.is_my_turn():
+                self.player1.make_move()
+            else: self.player2.make_move()
         # TODO
         #raise NotImplementedError(f"You need to write this code first")
 

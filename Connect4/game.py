@@ -21,7 +21,7 @@ class Connect4:
             -> executes the methods of a Game object
     """
     
-    def __init__(self) -> None:
+    def __init__(self, width, height) -> None:
         """ 
         Init a Connect 4 Game
             - Create an empty Board
@@ -30,11 +30,14 @@ class Connect4:
             - Set the Winner to False
             - etc.
         """
-        self.board = np.zeros((8, 7), dtype=int)    # Board 8x7 with zeros representing empty cells
+        self.board = np.empty((8, 7), dtype=str)    # Board 8x7 with zeros representing empty cells
         self.player_info = {}                       # Dictionary to map player UUID to icon
         self.players = []                           # a list with the players UUID's
+        self.activeplayer = 0                       # index of the active player in the list 
         self.turn_counter = 0                       # To keep track of whose turn it is
         self.winner = None                          # Holds the winner's ID when a win is detected
+        self.width = width
+        self.height = height
         #raise NotImplementedError(f"You need to write this code first")
 
     """
@@ -47,8 +50,8 @@ class Connect4:
             - is there a winner? if so who?
             - what turn is it?
         """
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        return (self.player_info[self.players[self.activeplayer]][0], self.winner, self.turn_counter)
+
 
     def register_player(self, player_id: uuid.UUID, name: str) -> str:
         """ 
