@@ -31,7 +31,8 @@ class Connect4:
             - etc.
         """
         self.board = np.zeros((8, 7), dtype=int)    # Board 8x7 with zeros representing empty cells
-        self.players = {}                           # Dictionary to map player UUID to icon
+        self.player_info = {}                       # Dictionary to map player UUID to icon
+        self.players = []                           # a list with the players UUID's
         self.turn_counter = 0                       # To keep track of whose turn it is
         self.winner = None                          # Holds the winner's ID when a win is detected
         #raise NotImplementedError(f"You need to write this code first")
@@ -49,7 +50,7 @@ class Connect4:
         # TODO
         raise NotImplementedError(f"You need to write this code first")
 
-    def register_player(self, player_id: uuid.UUID, icon: str, name: str) -> str:
+    def register_player(self, player_id: uuid.UUID, name: str) -> str:
         """ 
         Register a player with a unique ID
             Save his ID as one of the local players
@@ -60,8 +61,20 @@ class Connect4:
         Returns:
             icon:       Player Icon (or None if failed)
         """
-        if len(self.players) < 2:
-            self.players[player_id] = (icon, name)
+        if len(self.player_info) < 2:
+            icon = ''
+            if len(self.player_info) < 1:
+                choice = np.random.rand()
+                if choice > 0.5:
+                    icon = 'X'
+                else: icon = 'O'
+            elif self.player_info[self.players[0]][0] == 'X':
+                icon = 'O'
+            else: icon = 'X'
+
+            self.player_info[player_id] = (icon, name)
+            self.players.append(player_id)
+            print(self.player_info)
             return icon
         return None
         #raise NotImplementedError(f"You need to write this code first")

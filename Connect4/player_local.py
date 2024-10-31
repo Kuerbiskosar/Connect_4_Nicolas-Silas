@@ -8,9 +8,9 @@ import ansi_wrapper
 from msvcrt import getch # to detect keyboard input TODO: add as dependency
 
 class BoardIcon(Enum):
-    empty = 0
-    player1 = 1
-    player2 = 2
+    empty = ''
+    player1 = 'X'
+    player2 = 'O'
 
 class Action(Enum):
     """represents the possible input actions in a human readable way"""
@@ -50,12 +50,7 @@ class Player_Local(Player):
         super().__init__()  # Initialize id and icon from the abstract Player class
         self.game = game
         self.name = input("Enter your name: ")
-        while True:
-            self.icon = input(f'Enter your icon for {self.name}:')
-            if len(self.icon) == 1:
-                break
-            print('Please enter ony one charakter as your icon.')
-        self.register_in_game()
+        self.icon = self.register_in_game()
         #raise NotImplementedError(f"You need to write this code first")
 
     def register_in_game(self) -> str:
@@ -65,7 +60,7 @@ class Player_Local(Player):
         Returns:
             str: The player's icon.
         """
-        return self.game.register_player(self.id, self.icon, self.name)
+        return self.game.register_player(self.id, self.name)
         #raise NotImplementedError(f"You need to write this code first")
 
     def is_my_turn(self) -> bool:
@@ -99,8 +94,7 @@ class Player_Local(Player):
                 case Special_Keycodes.abort.value:
                     exit()
                 case Special_Keycodes.is_special.value:
-                    print("special value")
-                    # TODO: remove horribly deep nesting
+                    # special values return two keycodes, which is why we need to call getch() again
                     # needed, to avoid moving the cursor to the left, when pressing shift + k
                     second_input = getch()
                     match  second_input:
@@ -188,8 +182,8 @@ def main():
     print("You are running the file player_local for debug purposes.")
     game = Connect4()
     player1 = Player_Local(game)
-    print(player1.make_move())
-    board = np.zeros((8,7))
+    #print(player1.make_move())
+    #board = np.zeros((8,7))
     #player1.visualize(board)
     #board[1,0] = 1
     #board[1][1] = 2

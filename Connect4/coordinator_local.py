@@ -42,5 +42,5 @@ class Coordinator_Local:
 if __name__ == "__main__":
     # Create a coordinator
     # play a game
-    Coordinator = Coordinator_Local
+    Coordinator = Coordinator_Local()
     Coordinator.play()
