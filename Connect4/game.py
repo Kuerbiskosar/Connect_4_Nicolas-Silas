@@ -30,7 +30,7 @@ class Connect4:
             - Set the Winner to False
             - etc.
         """
-        self.board = np.empty((8, 7), dtype=str)    # Board 8x7 with zeros representing empty cells
+        self.board = np.empty((width, height), dtype=str)    # Board 8x7 with zeros representing empty cells
         self.player_info = {}                       # Dictionary to map player UUID to icon
         self.players = []                           # a list with the players UUID's
         self.activeplayer = 0                       # index of the active player in the list 
@@ -38,7 +38,7 @@ class Connect4:
         self.winner = None                          # Holds the winner's ID when a win is detected
         self.width = width
         self.height = height
-        #raise NotImplementedError(f"You need to write this code first")
+
 
     """
     Methods to be exposed to the API later on
@@ -80,7 +80,6 @@ class Connect4:
             print(self.player_info)
             return icon
         return None
-        #raise NotImplementedError(f"You need to write this code first")
 
 
     def get_board(self)-> np.ndarray:
@@ -91,8 +90,6 @@ class Connect4:
             board
         """
         return self.board
-        # TODO
-        #raise NotImplementedError(f"You need to write this code first")
 
 
     def check_move(self, column:int, icon:str) -> bool:
@@ -107,8 +104,7 @@ class Connect4:
         for i in range(len(self.board[column])):
             if self.board[column][i] == '':
                 self.board[column][i] = icon
-                self.activeplayer = self.activeplayer*-1 + 1
-                self.turn_counter += 1
+                self.__update_status()
                 print(self.activeplayer)
                 return True
         else:
@@ -125,9 +121,9 @@ class Connect4:
             - winner
             - turn_number
         """
-
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        self.activeplayer = self.activeplayer*-1 + 1
+        self.turn_counter += 1
+        self.__detect_win()
     
 
     def __detect_win(self)->bool:
@@ -139,6 +135,7 @@ class Connect4:
         """    
         # TODO
         raise NotImplementedError(f"You need to write this code first")
+
 
 if __name__ == "__main__":
     myGame = Connect4()

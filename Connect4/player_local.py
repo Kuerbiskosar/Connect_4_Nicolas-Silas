@@ -60,7 +60,7 @@ class Player_Local(Player):
         self.game = game
         self.name = input("Enter your name: ")
         self.icon = self.register_in_game()
-        #raise NotImplementedError(f"You need to write this code first")
+
 
     def register_in_game(self) -> str:
         """
@@ -70,7 +70,7 @@ class Player_Local(Player):
             str: The player's icon.
         """
         return self.game.register_player(self.id, self.name)
-        #raise NotImplementedError(f"You need to write this code first")
+
 
     def is_my_turn(self) -> bool:
         """ 
@@ -82,8 +82,7 @@ class Player_Local(Player):
         if self.game.get_status()[0] == self.icon:
             return True
         else: return False
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+
 
     def get_game_status(self):
         """
@@ -94,8 +93,7 @@ class Player_Local(Player):
       
         """
         return self.game.get_status()
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+
 
     def get_action(self) -> Action:
         #TODO: unify linux and windows commands (and make arrow keys work on linux)
@@ -181,8 +179,8 @@ class Player_Local(Player):
         """
         Celebration of Local CLI Player
         """
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        print(f'Congratulations, {self.name} wins!')
+
 
 def main():
     input("You are running the file player_local for debug purposes.")
