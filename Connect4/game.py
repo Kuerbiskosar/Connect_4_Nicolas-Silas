@@ -107,8 +107,7 @@ class Connect4:
         for i in range(len(self.board[column])):
             if self.board[column][i] == '':
                 self.board[column][i] = icon
-                self.activeplayer = self.activeplayer*-1 + 1
-                self.turn_counter += 1
+                self.__update_status()
                 print(self.activeplayer)
                 return True
         else:
@@ -125,7 +124,9 @@ class Connect4:
             - winner
             - turn_number
         """
-
+        self.activeplayer = self.activeplayer*-1 + 1
+        self.turn_counter += 1
+        self.__detect_win()
         # TODO
         raise NotImplementedError(f"You need to write this code first")
     
