@@ -5,7 +5,16 @@ from player import Player
 import numpy as np
 from enum import Enum
 import ansi_wrapper
-from msvcrt import getch # to detect keyboard input TODO: add as dependency
+import sys
+
+# because msvcrt only runs on windows, getch needs to be imported, when running on linux
+# TODO: Find the recommended way to do this
+if sys.platform.startswith('win'):     
+    from msvcrt import getch # to detect keyboard input TODO: add as dependency
+elif sys.platform.startswith('linux'):
+    from getch import getch
+
+
 
 class BoardIcon(Enum):
     empty = ''
@@ -70,7 +79,7 @@ class Player_Local(Player):
         Returns:
             bool: True if it's the player's turn, False otherwise.
         """
-        if self.game.activeplayer == self.icon:
+        if self.game.get_status()[0] == self.icon:
             return True
         else: return False
         # TODO
@@ -84,6 +93,7 @@ class Player_Local(Player):
             - what turn is it?
       
         """
+        return self.game.get_status()
         # TODO
         raise NotImplementedError(f"You need to write this code first")
 
@@ -127,8 +137,8 @@ class Player_Local(Player):
             self.visualize()
             action = self.get_action()
             if action == Action.drop:
-                self.game.check_move(self.drop_position, self.icon)
-                return self.drop_position
+                if self.game.check_move(self.drop_position, self.icon):
+                    return self.drop_position
             elif action == Action.right and self.drop_position < self.game.width-1:
                 self.drop_position += 1
             elif action == Action.left and self.drop_position > 0:
@@ -139,7 +149,7 @@ class Player_Local(Player):
         Visualize the current state of the Connect 4 board by printing it to the console.
         """
         board = self.game.get_board()
-        emptyIcon = ansi_wrapper.colorprint(" ⬤ ",background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True, foreground_color=ansi_wrapper.TerminalColors.default)
+        emptyIcon = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Black, background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True)
         icon1 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Yellow, background_color=ansi_wrapper.TerminalColors.Blue, background_bright = True)
         icon2 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Red, background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True)
 
@@ -180,8 +190,8 @@ class Player_Local(Player):
         raise NotImplementedError(f"You need to write this code first")
 
 def main():
-    print("You are running the file player_local for debug purposes.")
-    game = Connect4()
+    input("You are running the file player_local for debug purposes.")
+    game = Connect4(7,6)
     player1 = Player_Local(game)
     #print(player1.make_move())
     #board = np.zeros((8,7))
