@@ -34,12 +34,14 @@ class Coordinator_Local:
             This method handles player registration, turn management, 
             and checking for a winner until the game concludes.
         """
-        while True:
-            if self.player1.is_my_turn():
-                self.player1.make_move()
-            else: self.player2.make_move()
-        # TODO
-        #raise NotImplementedError(f"You need to write this code first")
+        while not self.game.winner and self.game.turn_counter < self.game.width * self.game.height:
+            currentPlayer = self.player1 if self.player1.is_my_turn() else self.player2
+            currentPlayer.make_move()
+            if self.game.winner:
+                currentPlayer.celebrate_win()
+                break
+            else:
+                print('The game is a draw.')
 
 
 
