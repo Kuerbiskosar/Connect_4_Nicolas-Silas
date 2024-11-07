@@ -133,8 +133,29 @@ class Connect4:
         Returns:
             True if there's a winner, False otherwise
         """    
-        # TODO
-        raise NotImplementedError(f"You need to write this code first")
+        horizontal_check = [(0,0), (0,1), (0,2), (0,3)]
+        for y in range(self.height):
+            for x in range(self.width - 3):
+                for i in horizontal_check:
+                    if self.board[x + i[0], y + i[1]] == self.player_info[self.players[self.activeplayer]][0]:
+                        self.winner = self.players[self.activeplayer]
+                    else: 
+                        self.winner = None
+                        break
+        
+        diagonal_down_check = [(0,3), (1,2), (2,1), (3,0)]
+        for y in range(self.height - 3):
+            for x in range(self.width - 3):
+                for i in diagonal_down_check:
+                    print(y)
+                    print(i)
+                    if self.board[x + i[0], y + i[1]] == self.player_info[self.players[self.activeplayer]][0]:
+                        self.winner = self.players[self.activeplayer]
+                    else: 
+                        self.winner = None
+                        break
+        
+        #raise NotImplementedError(f"You need to write this code first")
 
 
 if __name__ == "__main__":
