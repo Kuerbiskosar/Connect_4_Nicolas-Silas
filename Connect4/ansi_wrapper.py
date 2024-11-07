@@ -28,11 +28,14 @@ def colorprint(text:str,
     print("\033[=19h")
     foreground = f"38;5;{foreground_color.value}"
     background = f"48;5;{background_color.value}"
+    underline_and_blink = ";4"*underline+";5"*blink
     if foreground_color.value == 1000:
         foreground = "39"
     if background_color.value == 1000:
         background = "49"
-    return(f"\033[{foreground};{background}{";4"*underline+";5"*blink}m{text}\033[0m")
+    #return("\033[38;5;196;48;5;21mANSI RULES!\033[0m")
+    return(f"\033[{foreground};{background}{underline_and_blink}m{text}\033[0m")
+    #return(f"\033[{foreground};{background}{";4"*underline+";5"*blink}m{text}\033[0m")
 
 def clear_screen() -> None:
     """clear the entire screen in the Terminal"""

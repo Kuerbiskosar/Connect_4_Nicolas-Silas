@@ -7,8 +7,8 @@ from enum import Enum
 import ansi_wrapper
 import sys
 
-# because msvcrt only runs on windows, getch needs to be imported, when running on linux
-# TODO: Find the recommended way to do this
+#because msvcrt only runs on windows, getch needs to be imported, when running on linux
+#TODO: Find the recommended way to do this
 if sys.platform.startswith('win'):     
     from msvcrt import getch # to detect keyboard input TODO: add as dependency
 elif sys.platform.startswith('linux'):
@@ -98,33 +98,28 @@ class Player_Local(Player):
         raise NotImplementedError(f"You need to write this code first")
 
     def get_action(self) -> Action:
+        #TODO: unify linux and windows commands (and make arrow keys work on linux)
         """reads input from the user, until the keypress corresponds to a action in the game"""
         # gets user input until a key that does something is pressed
         while True:
             user_input = getch()
-            match user_input:
-                # if the user presses ctrl + c, end the program
-                case Special_Keycodes.abort.value:
-                    exit()
-                case Special_Keycodes.is_special.value:
-                    # special values return two keycodes, which is why we need to call getch() again
-                    # needed, to avoid moving the cursor to the left, when pressing shift + k
-                    second_input = getch()
-                    match  second_input:
-                        case Special_Keycodes.l_left.value:
-                            return Action.left
-                        case Special_Keycodes.l_right.value:
-                            return Action.right
-                        case _:
-                            pass
-                case b'a':
+            # if the user presses ctrl + c, end the program
+            if user_input == Special_Keycodes.abort.value:
+                exit()
+            elif user_input == Special_Keycodes.is_special.value:
+                # special values return two keycodes, which is why we need to call getch() again
+                # needed, to avoid moving the cursor to the left, when pressing shift + k
+                second_input = getch()
+                if second_input == Special_Keycodes.l_left.value:
                     return Action.left
-                case b'd':
+                if second_input == Special_Keycodes.l_right.value:
                     return Action.right
-                case Special_Keycodes.enter.value:
-                    return Action.drop
-                case _:
-                    pass
+            elif user_input == b'a' or user_input == 'a':
+                return Action.left
+            elif user_input == b'd' or user_input == 'd':
+                return Action.right
+            elif user_input == Special_Keycodes.enter.value or ord(user_input) == 10:
+                return Action.drop
 
     def make_move(self) -> int:
         """ 
