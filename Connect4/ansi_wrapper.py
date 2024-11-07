@@ -3,7 +3,7 @@ class TerminalColors(Enum):
     """
     A Class that defines the colors for Ansi formatting
     """
-    #Black = #0
+    Black = 0
     Red = 196#1
     #Green = #2
     Yellow = 226#3
@@ -11,7 +11,7 @@ class TerminalColors(Enum):
     #Magenta = #5
     #Cyan = #6
     #White = #7
-    default = 0
+    default = 1000
 
 def colorprint(text:str,
                foreground_color:TerminalColors=TerminalColors.default,
@@ -28,9 +28,9 @@ def colorprint(text:str,
     print("\033[=19h")
     foreground = f"38;5;{foreground_color.value}"
     background = f"48;5;{background_color.value}"
-    if foreground_color.value == 0:
+    if foreground_color.value == 1000:
         foreground = "39"
-    if background_color.value == 0:
+    if background_color.value == 1000:
         background = "49"
     return(f"\033[{foreground};{background}{";4"*underline+";5"*blink}m{text}\033[0m")
 
