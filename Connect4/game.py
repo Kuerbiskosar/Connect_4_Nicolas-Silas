@@ -121,9 +121,9 @@ class Connect4:
             - winner
             - turn_number
         """
+        self.__detect_win()
         self.activeplayer = self.activeplayer*-1 + 1
         self.turn_counter += 1
-        self.__detect_win()
     
 
     def __detect_win(self)->bool:
@@ -133,27 +133,41 @@ class Connect4:
         Returns:
             True if there's a winner, False otherwise
         """    
-        horizontal_check = [(0,0), (0,1), (0,2), (0,3)]
-        for y in range(self.height):
-            for x in range(self.width - 3):
-                for i in horizontal_check:
-                    if self.board[x + i[0], y + i[1]] == self.player_info[self.players[self.activeplayer]][0]:
-                        self.winner = self.players[self.activeplayer]
-                    else: 
-                        self.winner = None
-                        break
+        # Active player icon for easier comparison
+        icon = self.player_info[self.players[self.activeplayer]][0]
         
-        diagonal_down_check = [(0,3), (1,2), (2,1), (3,0)]
-        for y in range(self.height - 3):
-            for x in range(self.width - 3):
-                for i in diagonal_down_check:
-                    print(y)
-                    print(i)
-                    if self.board[x + i[0], y + i[1]] == self.player_info[self.players[self.activeplayer]][0]:
-                        self.winner = self.players[self.activeplayer]
-                    else: 
-                        self.winner = None
-                        break
+        # Horizontal Check
+        for y in range(self.height):
+            for x in range(self.width - 3):  # Only go as far as possible for 4 in a row
+                if all(self.board[x + i, y] == icon for i in range(4)):
+                    self.winner = self.players[self.activeplayer]
+                    return True
+
+        # Vertical Check
+        for x in range(self.width):
+            for y in range(self.height - 3):  # Only go as far as possible for 4 in a column
+                if all(self.board[x, y + i] == icon for i in range(4)):
+                    self.winner = self.players[self.activeplayer]
+                    return True
+
+        # Diagonal Down Check (Top-left to Bottom-right)
+        for x in range(self.width - 3):
+            for y in range(self.height - 3):
+                if all(self.board[x + i, y + i] == icon for i in range(4)):
+                    self.winner = self.players[self.activeplayer]
+                    return True
+
+        # Diagonal Up Check (Bottom-left to Top-right)
+        for x in range(self.width - 3):
+            for y in range(3, self.height):  # Start from y = 3 for upward diagonal
+                if all(self.board[x + i, y - i] == icon for i in range(4)):
+                    self.winner = self.players[self.activeplayer]
+                    return True
+
+        # No winner detected
+        self.winner = None
+        return False
+
         
         #raise NotImplementedError(f"You need to write this code first")
 
