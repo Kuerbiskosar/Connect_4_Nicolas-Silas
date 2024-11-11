@@ -1,7 +1,7 @@
 
 
 from game import Connect4
-from player_local import Player_Local
+from os import path # to check if we are wearing a senseHat
 
 class Coordinator_Local:
     """ 
@@ -22,8 +22,21 @@ class Coordinator_Local:
         Initialize the Coordinator_Local with a Game and 2 Players
         """
         self.game = Connect4(8,7)
-        self.player1 = Player_Local(self.game)
-        self.player2 = Player_Local(self.game)
+        # check if a SenseHat is connected. If not, the game will run in the Terminal, where this script was started.
+        # https://raspberrypi.stackexchange.com/questions/39153/how-to-detect-what-kind-of-hat-or-gpio-board-is-plugged-in-if-any
+        if path.isfile(r"/proc/device-tree/hat/product"): # the r before the string indicates a raw string.
+            # a Hat is attached, most likely a senseHat
+            # create a sense hat shared between both players
+            from sense_hat import SenseHat #type: ignore # this commend makes pylance accept, that sense_hat does not need to be installed on windows
+            from player_raspi_local import Player_Raspi_Local
+
+            sense = SenseHat()
+            self.player1 = Player_Raspi_Local(self.game, sense)
+            self.player2 = Player_Raspi_Local(self.game, sense)
+        else:
+            from player_local import Player_Local
+            self.player1 = Player_Local(self.game)
+            self.player2 = Player_Local(self.game)
         #raise NotImplementedError(f"You need to write this code first")
     
 
