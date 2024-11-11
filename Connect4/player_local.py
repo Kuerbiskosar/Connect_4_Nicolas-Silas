@@ -9,12 +9,10 @@ import sys
 
 #because msvcrt only runs on windows, getch needs to be imported, when running on linux
 #TODO: Find the recommended way to do this
-if sys.platform.startswith('win'):     
+if sys.platform.startswith('win'): #type: ignore #to suppress the pylance warning on linux
     from msvcrt import getch # to detect keyboard input TODO: add as dependency
 elif sys.platform.startswith('linux'):
-    from getch import getch
-
-
+    from getch import getch #type: ignore #to ignore the pylance warning on windows
 
 class BoardIcon(Enum):
     empty = ''
