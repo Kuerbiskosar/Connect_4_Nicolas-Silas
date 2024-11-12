@@ -31,8 +31,11 @@ class Coordinator_Local:
             from player_raspi_local import Player_Raspi_Local
 
             sense = SenseHat()
-            self.player1 = Player_Raspi_Local(self.game, sense)
-            self.player2 = Player_Raspi_Local(self.game, sense)
+            self.player1 = Player_Raspi_Local(self.game, sense=sense)
+            self.player2 = Player_Raspi_Local(self.game, sense=sense)
+            print("initiated sense-hat players")
+            #self.player1 = Player_Local(self.game)
+            #self.player2 = Player_Local(self.game)
         else:
             from player_local import Player_Local
             self.player1 = Player_Local(self.game)
