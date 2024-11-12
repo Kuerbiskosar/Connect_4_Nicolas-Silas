@@ -96,10 +96,13 @@ class Connect4:
         """ 
         Check move of a certain player is legal
             If a certain player can make the requested move
+            if so, makes the move and returns true
 
         Parameters:
             col (int):      Selected Column of Coin Drop
             player (str):   Player ID 
+        Returns:
+            bool    True if the move was valid, false otherwise
         """
         for i in range(len(self.board[column])):
             if self.board[column][i] == '':
