@@ -11,8 +11,14 @@ import sys
 #TODO: Find the recommended way to do this
 if sys.platform.startswith('win'): #type: ignore #to suppress the pylance warning on linux
     from msvcrt import getch # to detect keyboard input TODO: add as dependency
+    isLinux = False
 elif sys.platform.startswith('linux'):
     from getch import getch #type: ignore #to ignore the pylance warning on windows
+    isLinux = True
+else:
+    raise NotImplementedError("You are not running on a linux or windows machine. Please note, that gaming on a mac is not supported. \
+                              for more Information see: https://www.youtube.com/watch?v=IYv3-HfRNcA \
+                              and https://www.youtube.com/watch?v=GCrfWmaBy6k")
 
 class BoardIcon(Enum):
     empty = ''
@@ -24,20 +30,51 @@ class Action(Enum):
     right = 0
     left = 1
     drop = 2
-class Special_Keycodes(Enum):
-    """abstracting the special keycodes of special keys. keys that send the is_special key first are marked with l_<Key name>"""
-    is_special = b'\xe0' # leader for arrow keys and the navigation block
+
+# used to decode Windows keycodes
+# should contain the same keys as Windows_Keycodes
+class Linux_Keycodes(Enum):
+    is_special = 27 #leader NOTE: after this another byte is send, that is part of the leader, that's why esc can't be used
     #the following keys are lead with a leaderKey
-    l_up = b'H'
-    l_left = b'K'
-    l_down = b'P'
-    l_right = b'M'
+    l_up = 65 #up arrow
+    l_left = 68 #left arrow
+    l_down = 66 #down arrow
+    l_right = 67 #right arrow
 
     # these keys don't have a leader
-    abort = b'\x03' #ctrl + c
-    esc = b'\x1b'
-    enter = b'\r'
-    
+    abort = 9 # tab instad of ctrl+c, because ctrl + c already terminates the programm
+    esc = 9 # tab instead of esc, because esc (27) is also the first byte of the leader key...
+    enter = 10
+
+    # alpha keys
+    w = 119
+    a = 97
+    s = 115
+    d = 100
+ 
+# used to decode Windows keycodes
+# should contain the same keys as Linux_Keycodes
+class Windows_Keycodes(Enum):
+    """abstracting the special keycodes of special keys. keys that send the is_special key first are marked with l_<Key name>"""
+    is_special = 224 # leader for arrow keys and the navigation block
+    #the following keys are lead with a leaderKey
+    l_up = 72
+    l_left = 75
+    l_down = 80
+    l_right = 77
+
+    # these keys don't have a leader
+    abort = 3 #ctrl + c
+    esc = 27
+    enter = 13
+
+    # alpha keys
+    w = 119
+    a = 97
+    s = 115
+    d = 100
+ 
+ 
 
 class Player_Local(Player):
     """ 
@@ -99,22 +136,33 @@ class Player_Local(Player):
         # gets user input until a key that does something is pressed
         while True:
             user_input = getch()
+            #check if the linux or windows getch got executed
+            if isinstance(user_input, str):
+                keycodes = Linux_Keycodes
+                isLinux = True
+            else:
+                keycodes = Windows_Keycodes
+                isLinux = False
+            user_input = ord(user_input) #converts to int, to make the special leader of linux readable
+
             # if the user presses ctrl + c, end the program
-            if user_input == Special_Keycodes.abort.value:
+            if user_input == keycodes.abort.value:
                 exit()
-            elif user_input == Special_Keycodes.is_special.value:
+            elif user_input == keycodes.is_special.value:
+                if isLinux:
+                    _ = getch() # the linux leader key returns two characters. skip the second with this line
                 # special values return two keycodes, which is why we need to call getch() again
                 # needed, to avoid moving the cursor to the left, when pressing shift + k
-                second_input = getch()
-                if second_input == Special_Keycodes.l_left.value:
+                second_input = ord(getch())
+                if second_input == keycodes.l_left.value:
                     return Action.left
-                if second_input == Special_Keycodes.l_right.value:
+                if second_input == keycodes.l_right.value:
                     return Action.right
-            elif user_input == b'a' or user_input == 'a':
+            elif user_input == keycodes.a.value:
                 return Action.left
-            elif user_input == b'd' or user_input == 'd':
+            elif user_input == keycodes.d.value:
                 return Action.right
-            elif user_input == Special_Keycodes.enter.value or ord(user_input) == 10:
+            elif user_input == keycodes.enter.value:
                 return Action.drop
 
     def make_move(self) -> int:

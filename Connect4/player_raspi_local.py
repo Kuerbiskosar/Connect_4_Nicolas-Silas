@@ -26,7 +26,7 @@ class Player_Raspi_Local(Player_Local):
         """
         # Initialize the parent class (Player_Local)
         # TODO: The player can't input his name, if he plays on the raspi... fix that somehow (probably just not doing the super init)
-        super().__init__(**kwargs)
+        super().__init__(game, **kwargs)
 
         # Extract the SenseHat instance from kwargs  (only if SHARED instance)
         # Remove Otherwise
@@ -46,7 +46,7 @@ class Player_Raspi_Local(Player_Local):
         """
         # first do normal register
         #self.icon = super().register_in_game()          # call method of Parent Class (Player_Local)
-        super().register_in_game()
+        return super().register_in_game()
 
         # TODO: also set color of the player
 
