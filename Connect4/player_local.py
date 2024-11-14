@@ -97,7 +97,6 @@ class Player_Local(Player):
         """
         super().__init__()  # Initialize id and icon from the abstract Player class
         self.game = game
-        self.name = input("Enter your name: ")
         self.icon = self.register_in_game()
 
 
@@ -108,6 +107,7 @@ class Player_Local(Player):
         Returns:
             str: The player's icon.
         """
+        self.name = input("Enter your name: ")
         return self.game.register_player(self.id, self.name)
 
 
@@ -202,11 +202,16 @@ class Player_Local(Player):
         width = len(board)
         height = len(board[0])
         output = ""
+        myIcon = ""
+        if self.icon == "X":
+            myIcon = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Yellow, background_bright = True)
+        else:
+            myIcon = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Red, background_bright=True)
         # range from width (exclusive) to 0 (inclusive) because the board position 0,0 is at the bottom left
         # only print the header, when the game is not yet over
         if self.drop_position >= 0:
             output_header = ["   "]*(self.game.width+1)
-            output_header[self.drop_position] = ansi_wrapper.colorprint(" ↓ ",blink=True)
+            output_header[self.drop_position] = myIcon
             output_header = ''.join(output_header)
             output += output_header + "\n"
         else:
