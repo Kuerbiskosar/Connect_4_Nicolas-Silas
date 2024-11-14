@@ -4,6 +4,7 @@ from sense_hat import SenseHat #type: ignore
 
 from game import Connect4
 from player_local import Player_Local
+from player_local import Action
 
 
 class Player_Raspi_Local(Player_Local):
@@ -76,7 +77,7 @@ class Player_Raspi_Local(Player_Local):
 
         #raise NotImplementedError(f" visualize on Raspi not yet implemented")
 
-    def make_move(self) -> int:
+    def get_action(self) -> int:
         """
         Override make_move for Raspberry Pi input using the Sense HAT joystick.
         Uses joystick to move left or right and select a column.
@@ -84,7 +85,19 @@ class Player_Raspi_Local(Player_Local):
         Returns:
             col (int):  Selected column (0...7)
         """
-        super().make_move()
+        #super().visualize()
+        while True:
+            event = self.sense.stick.wait_for_event()
+            print(event)
+            if event.action == 'pressed':
+                if event.direction == 'left':
+                    return Action.left
+                elif event.direction == 'right':
+                    return Action.right
+                elif event.direction == 'middle':
+                    return Action.drop
+            #print(f"events: {events}")
+        #super().make_move()
         
         #raise NotImplementedError(f"make_move not yet implemented on Player_Raspi_Local")
     

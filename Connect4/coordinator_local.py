@@ -56,8 +56,7 @@ class Coordinator_Local:
             if self.game.winner:
                 currentPlayer.celebrate_win()
                 break
-            else:
-                print('The game is a draw.')
+        print('The game is a draw.')
 
 
 
