@@ -46,9 +46,7 @@ class Player_Raspi_Local(Player_Local):
         """
         # first do normal register
         #self.icon = super().register_in_game()          # call method of Parent Class (Player_Local)
-        return super().register_in_game()
-
-        # TODO: also set color of the player
+        return self.game.register_player(self.id, name="Raspberry")
 
         #raise NotImplementedError(f"Override register_in_game of Player_Raspi_Locap")
 
