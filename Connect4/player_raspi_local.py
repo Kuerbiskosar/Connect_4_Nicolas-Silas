@@ -103,6 +103,9 @@ class Player_Raspi_Local(Player_Local):
         icon1 = [255, 255, 0]  # Yellow for Player 1
         icon2 = [255, 0, 0]  # Red for Player 2
 
+        winner_icon1 = [0, 255, 0] # Green for win Player 1
+        winner_icon2 = [255, 128, 0] # Ornage for win Player 1
+
         # Prepare the LED matrix (8x8)
         matrix = [[emptyIcon for _ in range(8)] for _ in range(8)]
 
@@ -111,9 +114,13 @@ class Player_Raspi_Local(Player_Local):
         for x in range(len(board)):
             for y in range(len(board[0])):
                 if board[x][y] == BoardIcon.player1.value:
-                    matrix[7 - y][x] = icon1  # Adjust for Sense HAT coordinates
+                    matrix[7 - y][x] = icon1
                 elif board[x][y] == BoardIcon.player2.value:
                     matrix[7 - y][x] = icon2
+                elif board[x][y] == BoardIcon.player1_winning.value:
+                    matrix[7 - y][x] = winner_icon1
+                elif board[x][y] == BoardIcon.player2_winning.value:
+                    matrix[7 - y][x] = winner_icon2
 
         # Flatten the matrix and send it to the Sense HAT
         flattened_matrix = [pixel for row in matrix for pixel in row]
