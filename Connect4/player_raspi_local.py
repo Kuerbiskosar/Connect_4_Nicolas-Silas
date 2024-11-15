@@ -5,6 +5,7 @@ from sense_hat import SenseHat #type: ignore
 from game import Connect4
 from player_local import Player_Local
 from player_local import Action
+from player_local import BoardIcon
 
 
 class Player_Raspi_Local(Player_Local):
@@ -60,17 +61,68 @@ class Player_Raspi_Local(Player_Local):
         Parameters:
             column (int):       potentially selected Column during Selection Process
         """
-        
+        # Define colors
+        empty = [255, 255, 255]  # White for empty cells
+        if self.icon == BoardIcon.player1.value:
+            highlight = [255, 255, 0]  # Yellow for Player 1
+        elif self.icon == BoardIcon.player2.value:
+            highlight = [255, 0, 0]  # Red for Player 2
+
+        # Prepare the top row only
+        top_row = [highlight if col == column else empty for col in range(8)]
+
+        # Get the current board visualization
+        board_display = [[empty for _ in range(8)] for _ in range(8)]
+        board = self.game.get_board()
+
+        # Map the game board onto the display
+        icon1 = [255, 255, 0]  # Yellow for Player 1
+        icon2 = [255, 0, 0]  # Red for Player 2
+        for x in range(len(board)):
+            for y in range(len(board[0])):
+                if board[x][y] == BoardIcon.player1.value:
+                    board_display[7 - y][x] = icon1
+                elif board[x][y] == BoardIcon.player2.value:
+                    board_display[7 - y][x] = icon2
+
+        # Replace the top row with the column highlight
+        board_display[0] = top_row
+
+        # Flatten the display array and update the Sense HAT
+        flattened_display = [pixel for row in board_display for pixel in row]
+        self.sense.set_pixels(flattened_display)
+
 
     def visualize(self) -> None:
         """
         Override Visualization of Local Player
             Also Visualize on the Raspi 
         """
+        # Define colors
+        emptyIcon = [255, 255, 255]  # White for empty cells
+        icon1 = [255, 255, 0]  # Yellow for Player 1
+        icon2 = [255, 0, 0]  # Red for Player 2
 
-        # TODO: visualize Board on raspi
+        # Prepare the LED matrix (8x8)
+        matrix = [[emptyIcon for _ in range(8)] for _ in range(8)]
 
-        # OPTIONAL: also visualize on CLI
+        # Map the Connect4 board onto the LED matrix
+        board = self.game.get_board()
+        for x in range(len(board)):
+            for y in range(len(board[0])):
+                if board[x][y] == BoardIcon.player1.value:
+                    matrix[7 - y][x] = icon1  # Adjust for Sense HAT coordinates
+                elif board[x][y] == BoardIcon.player2.value:
+                    matrix[7 - y][x] = icon2
+
+        # Flatten the matrix and send it to the Sense HAT
+        flattened_matrix = [pixel for row in matrix for pixel in row]
+        self.sense.set_pixels(flattened_matrix)
+
+        # Also update the column selection
+        self.visualize_choice(self.drop_position)
+
+        # OPTIONAL: Visualize on CLI
         super().visualize()
 
         #raise NotImplementedError(f" visualize on Raspi not yet implemented")

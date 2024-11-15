@@ -224,7 +224,6 @@ class Player_Local(Player):
         print(output)
         print(f"{self.name}! it is your turn!")
         print("select in which row you want to place your coin, by pressing <a>/<d> or <right arrow> / <Left arrow>")
-        print(myIcon)
 
     def celebrate_win(self) -> None:
         """
