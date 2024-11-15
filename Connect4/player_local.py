@@ -24,6 +24,10 @@ class BoardIcon(Enum):
     empty = ''
     player1 = 'X'
     player2 = 'O'
+    # winning symbols are the symbols of the players as lowercase letters
+    # winning symbols are the symbols of the players as lowercase letters
+    player1_winning = 'x'
+    player2_winning = 'o'
 
 class Action(Enum):
     """represents the possible input actions in a human readable way"""
@@ -192,6 +196,9 @@ class Player_Local(Player):
         icon1 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Yellow, background_color=ansi_wrapper.TerminalColors.Blue, background_bright = True)
         icon2 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Red, background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True)
 
+        winner_icon1 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Green, background_color=ansi_wrapper.TerminalColors.Blue, background_bright = True)
+        winner_icon2 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Orange, background_color=ansi_wrapper.TerminalColors.Blue, background_bright = True)
+
         width = len(board)
         height = len(board[0])
         output = ""
@@ -201,10 +208,14 @@ class Player_Local(Player):
         else:
             myIcon = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Red, background_bright=True)
         # range from width (exclusive) to 0 (inclusive) because the board position 0,0 is at the bottom left
-        output_header = ["   "]*(self.game.width+1)
-        output_header[self.drop_position] = myIcon
-        output_header = ''.join(output_header)
-        output += output_header + "\n"
+        # only print the header, when the game is not yet over
+        if self.drop_position >= 0:
+            output_header = ["   "]*(self.game.width+1)
+            output_header[self.drop_position] = myIcon
+            output_header = ''.join(output_header)
+            output += output_header + "\n"
+        else:
+            output += "\n"
         for y in range(height-1,-1,-1):
             for x in range(self.game.width):
                 if board[x,y] == BoardIcon.empty.value:
@@ -213,6 +224,10 @@ class Player_Local(Player):
                     output += icon1
                 elif board[x,y] == BoardIcon.player2.value:
                     output += icon2
+                elif board[x,y] == BoardIcon.player1_winning.value:
+                    output += winner_icon1
+                elif board[x,y] == BoardIcon.player2_winning.value:
+                    output += winner_icon2
                 else:
                     # if we don't know what the number in the array is supposed to represent,
                     # we could raise a exception, but this way funnier,
@@ -224,11 +239,14 @@ class Player_Local(Player):
         print(output)
         print(f"{self.name}! it is your turn!")
         print("select in which row you want to place your coin, by pressing <a>/<d> or <right arrow> / <Left arrow>")
+        print(myIcon)
 
     def celebrate_win(self) -> None:
         """
         Celebration of Local CLI Player
         """
+        self.drop_position = -1
+        self.visualize()
         print(f'Congratulations, {self.name} wins!')
 
 

@@ -137,35 +137,68 @@ class Connect4:
             True if there's a winner, False otherwise
         """    
         # Active player icon for easier comparison
-        icon = self.player_info[self.players[self.activeplayer]][0]
-        
-        # Horizontal Check
-        for y in range(self.height):
-            for x in range(self.width - 3):  # Only go as far as possible for 4 in a row
-                if all(self.board[x + i, y] == icon for i in range(4)):
-                    self.winner = self.players[self.activeplayer]
-                    return True
+        icon:str = self.player_info[self.players[self.activeplayer]][0]
+        # the code checks Horizontal wins, Vertical wins, Diagonal up and Diagonal down wins in this order
+        # The code for those checks is almost same, except for the checking pattern and boundary conditions
+        # for the diagonal down check a special case is needed, because it is the only case that does not start its check at an offset of 0,0
+        patterns = [(1,0), (0,1), (1,1)]
+        #boundarys = [(1,0), (0,1), (1,1), (1, -1)] # the for loop index i gets multiplied with these, to change the positions
+        # check horizontal, vertical and diagonal
+        for pattern in patterns:
+            for y in range(self.height - 3 * pattern[1]):
+                for x in range(self.width - 3 * pattern[0]):  # Only go as far as possible for 4 in a row
+                    if all(self.board[x + i * pattern[0], y + i * pattern[1]] == icon for i in range(4)):
+                        self.winner = self.players[self.activeplayer]
+                        # set the fields to winner fields
+                        for i in range (4):
+                            self.board[x+i*pattern[0], y+i*pattern[1]] = icon.lower()
+                        print(icon.lower)
+                        return True
+        # check diagonal down
+        for pattern in patterns:
+            for y in range(3, self.height):
+                for x in range(self.width - 3):  # Only go as far as possible for 4 in a row
+                    if all(self.board[x + i, y - i] == icon for i in range(4)):
+                        self.winner = self.players[self.activeplayer]
+                        # set the fields to winner fields
+                        for i in range (4):
+                            self.board[x+i, y-i] = icon.lower()
+                        print(icon.lower)
+                        return True
 
-        # Vertical Check
-        for x in range(self.width):
-            for y in range(self.height - 3):  # Only go as far as possible for 4 in a column
-                if all(self.board[x, y + i] == icon for i in range(4)):
-                    self.winner = self.players[self.activeplayer]
-                    return True
 
-        # Diagonal Down Check (Top-left to Bottom-right)
-        for x in range(self.width - 3):
-            for y in range(self.height - 3):
-                if all(self.board[x + i, y + i] == icon for i in range(4)):
-                    self.winner = self.players[self.activeplayer]
-                    return True
 
-        # Diagonal Up Check (Bottom-left to Top-right)
-        for x in range(self.width - 3):
-            for y in range(3, self.height):  # Start from y = 3 for upward diagonal
-                if all(self.board[x + i, y - i] == icon for i in range(4)):
-                    self.winner = self.players[self.activeplayer]
-                    return True
+#        # Horizontal Check
+#        for y in range(self.height):
+#            for x in range(self.width - 3):  # Only go as far as possible for 4 in a row
+#                if all(self.board[x + i, y] == icon for i in range(4)):
+#                    self.winner = self.players[self.activeplayer]
+#                    # set the fields to winner fields
+#                    for i in range (4):
+#                        self.board[x+i, y] = icon.lower()
+#                    print(icon.lower)
+#                    return True
+#
+#        # Vertical Check
+#        for x in range(self.width):
+#            for y in range(self.height - 3):  # Only go as far as possible for 4 in a column
+#                if all(self.board[x, y + i] == icon for i in range(4)):
+#                    self.winner = self.players[self.activeplayer]
+#                    return True
+#
+#        # Diagonal Down Check (Top-left to Bottom-right)
+#        for x in range(self.width - 3):
+#            for y in range(self.height - 3):
+#                if all(self.board[x + i, y + i] == icon for i in range(4)):
+#                    self.winner = self.players[self.activeplayer]
+#                    return True
+#
+#        # Diagonal Up Check (Bottom-left to Top-right)
+#        for x in range(self.width - 3):
+#            for y in range(3, self.height):  # Start from y = 3 for upward diagonal
+#                if all(self.board[x + i, y - i] == icon for i in range(4)):
+#                    self.winner = self.players[self.activeplayer]
+#                    return True
 
         # No winner detected
         self.winner = None

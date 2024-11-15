@@ -5,8 +5,10 @@ class TerminalColors(Enum):
     """
     Black = 0
     Red = 196#1
+    Green = 35
     #Green = #2
     Yellow = 226#3
+    Orange = 221
     Blue = 21#4
     #Magenta = #5
     #Cyan = #6
@@ -49,4 +51,4 @@ def set_cursorpos(x:int,y:int):
 if __name__ == "__main__":
     #print("\033[\34;44mwell...")
     print("Hallo")
-    print(colorprint("⬤", foreground_color=TerminalColors.Blue, background_color=TerminalColors.Blue, underline=False,blink=False))
+    print(colorprint("⬤", foreground_color=TerminalColors.Yellow, background_color=TerminalColors.Blue, underline=False,blink=False))

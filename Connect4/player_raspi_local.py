@@ -138,7 +138,6 @@ class Player_Raspi_Local(Player_Local):
         #super().visualize()
         while True:
             event = self.sense.stick.wait_for_event()
-            print(event)
             if event.action == 'pressed':
                 if event.direction == 'left':
                     return Action.left
