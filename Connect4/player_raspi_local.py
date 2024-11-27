@@ -55,12 +55,14 @@ class Player_Raspi_Local(Player_Local):
     
     def visualize_choice(self, column:int)->None:
         """ 
+        TODO: remove this function. it is not used anymore
         Visualize the SELECTION process of choosing a column
             Toggles the LED on the top row of the currently selected column
 
         Parameters:
             column (int):       potentially selected Column during Selection Process
         """
+        raise NotImplementedError("this function should not be called anymore, because it does not work as intended")
         # Define colors
         empty = [55, 55, 55]  # White for empty cells
         if self.icon == BoardIcon.player1.value:
@@ -100,7 +102,7 @@ class Player_Raspi_Local(Player_Local):
             Also Visualize on the Raspi 
         """
         # Define colors
-        topRow = [0,0,0] # black for cells above the board
+        nonboard = [0,0,0] # black for cells above the board
         emptyIcon = [155, 155, 155]  # White for empty cells
         icon1 = [255, 255, 0]  # Yellow for Player 1
         icon2 = [255, 0, 0]  # Red for Player 2
@@ -109,17 +111,19 @@ class Player_Raspi_Local(Player_Local):
         winner_icon2 = [255, 128, 0] # Orange for win Player 1
 
         # Prepare the LED matrix (8x8)
-        matrix = [[emptyIcon for _ in range(8)] for _ in range(8)]
+        matrix = [[nonboard for _ in range(8)] for _ in range(8)]
+        
         # visualize the choice on the top of the board
         if self.icon == BoardIcon.player1.value:
             highlight = [255, 255, 0]  # Yellow for Player 1
         elif self.icon == BoardIcon.player2.value:
             highlight = [255, 0, 0]  # Red for Player 2
-        top_row = [highlight if col == self.drop_position else topRow for col in range(8)]
-        matrix[0] = top_row 
+        top_row = [highlight if col == self.drop_position else nonboard for col in range(8)]
+
+        board = self.game.get_board()
+        matrix[7-len(board[0])] = top_row 
 
         # Map the Connect4 board onto the LED matrix
-        board = self.game.get_board()
         for x in range(len(board)):
             for y in range(len(board[0])):
                 if board[x][y] == BoardIcon.player1.value:
@@ -130,6 +134,8 @@ class Player_Raspi_Local(Player_Local):
                     matrix[7 - y][x] = winner_icon1
                 elif board[x][y] == BoardIcon.player2_winning.value:
                     matrix[7 - y][x] = winner_icon2
+                elif board[x][y] == BoardIcon.empty.value:
+                    matrix[7-y][x] = emptyIcon
 
         # Flatten the matrix and send it to the Sense HAT
         flattened_matrix = [pixel for row in matrix for pixel in row]
