@@ -62,7 +62,7 @@ class Player_Raspi_Local(Player_Local):
             column (int):       potentially selected Column during Selection Process
         """
         # Define colors
-        empty = [255, 255, 255]  # White for empty cells
+        empty = [55, 55, 55]  # White for empty cells
         if self.icon == BoardIcon.player1.value:
             highlight = [255, 255, 0]  # Yellow for Player 1
         elif self.icon == BoardIcon.player2.value:
@@ -90,7 +90,8 @@ class Player_Raspi_Local(Player_Local):
 
         # Flatten the display array and update the Sense HAT
         flattened_display = [pixel for row in board_display for pixel in row]
-        self.sense.set_pixels(flattened_display)
+        print(flattened_display)
+        #self.sense.set_pixels(flattened_display)
 
 
     def visualize(self) -> None:
@@ -99,15 +100,23 @@ class Player_Raspi_Local(Player_Local):
             Also Visualize on the Raspi 
         """
         # Define colors
-        emptyIcon = [255, 255, 255]  # White for empty cells
+        topRow = [0,0,0] # black for cells above the board
+        emptyIcon = [155, 155, 155]  # White for empty cells
         icon1 = [255, 255, 0]  # Yellow for Player 1
         icon2 = [255, 0, 0]  # Red for Player 2
 
         winner_icon1 = [0, 255, 0] # Green for win Player 1
-        winner_icon2 = [255, 128, 0] # Ornage for win Player 1
+        winner_icon2 = [255, 128, 0] # Orange for win Player 1
 
         # Prepare the LED matrix (8x8)
         matrix = [[emptyIcon for _ in range(8)] for _ in range(8)]
+        # visualize the choice on the top of the board
+        if self.icon == BoardIcon.player1.value:
+            highlight = [255, 255, 0]  # Yellow for Player 1
+        elif self.icon == BoardIcon.player2.value:
+            highlight = [255, 0, 0]  # Red for Player 2
+        top_row = [highlight if col == self.drop_position else topRow for col in range(8)]
+        matrix[0] = top_row 
 
         # Map the Connect4 board onto the LED matrix
         board = self.game.get_board()
@@ -127,10 +136,10 @@ class Player_Raspi_Local(Player_Local):
         self.sense.set_pixels(flattened_matrix)
 
         # Also update the column selection
-        self.visualize_choice(self.drop_position)
+        #self.visualize_choice(self.drop_position)
 
         # OPTIONAL: Visualize on CLI
-        super().visualize()
+        #super().visualize()
 
         #raise NotImplementedError(f" visualize on Raspi not yet implemented")
 
