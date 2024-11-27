@@ -21,7 +21,7 @@ class Coordinator_Local:
         """
         Initialize the Coordinator_Local with a Game and 2 Players
         """
-        self.game = Connect4(8,7)
+        self.game = Connect4(7,6)
         # check if a SenseHat is connected. If not, the game will run in the Terminal, where this script was started.
         # https://raspberrypi.stackexchange.com/questions/39153/how-to-detect-what-kind-of-hat-or-gpio-board-is-plugged-in-if-any
         if path.isfile(r"/proc/device-tree/hat/product"): # the r before the string indicates a raw string.

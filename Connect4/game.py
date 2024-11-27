@@ -108,7 +108,6 @@ class Connect4:
             if self.board[column][i] == '':
                 self.board[column][i] = icon
                 self.__update_status()
-                print(self.activeplayer)
                 return True
         else:
             return False
@@ -152,7 +151,6 @@ class Connect4:
                         # set the fields to winner fields
                         for i in range (4):
                             self.board[x+i*pattern[0], y+i*pattern[1]] = icon.lower()
-                        print(icon.lower)
                         return True
         # check diagonal down
         for pattern in patterns:
@@ -163,7 +161,6 @@ class Connect4:
                         # set the fields to winner fields
                         for i in range (4):
                             self.board[x+i, y-i] = icon.lower()
-                        print(icon.lower)
                         return True
 
 
