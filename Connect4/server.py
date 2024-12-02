@@ -6,7 +6,7 @@ from flask_swagger_ui import get_swaggerui_blueprint        # for swagger docume
 
 
 # local includes
-# from game import Connect4
+from game import Connect4
 
 
 class Connect4Server:
@@ -26,7 +26,7 @@ class Connect4Server:
         - Expose API Methods
         """
 
-        #self.game = Connect4()  # Connect4 game instance
+        self.game = Connect4()  # Connect4 game instance
         self.app = Flask(__name__)  # Flask app instance
 
         # Swagger UI Configuration
@@ -64,21 +64,26 @@ class Connect4Server:
         @self.app.route('/connect4/status', methods=['GET'])
         def get_status():
             # TODO: return a jasonified version of the game status
-            pass
+            status = self.game.get_status()
+            return jsonify(status)
 
 
         # 2. Expose register_player method
         @self.app.route('/connect4/register', methods=['POST'])
         def register_player():
             # TODO Register the player and return the ICON
-            pass
+            icon = self.game.register_player()
+            if icon is None:
+                return jsonify({"error": "Maximum number of players reached"}), 400
+            return jsonify(icon)
 
 
         # 3. Expose get_board method
         @self.app.route('/connect4/board', methods=['GET'])
         def get_board():
             # TODO correctly return the Board
-            pass
+            board = self.game.get_board()
+            return jsonify(board)
 
         # 4. Expose move method
         @self.app.route('/connect4/make_move', methods=['POST'])
