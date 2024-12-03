@@ -50,6 +50,7 @@ class Connect4:
             - is there a winner? if so who?
             - what turn is it?
         """
+        # TODO: change to follow api specification (currently: icon, winner, turn_counter. should be: icon, uuid, winner, turn_counter)
         return (self.player_info[self.players[self.activeplayer]][0], self.winner, self.turn_counter)
 
 
@@ -60,6 +61,7 @@ class Connect4:
         
         Parameters:
             player_id (UUID)    Unique ID
+            name (str)          the Name of the player
 
         Returns:
             icon:       Player Icon (or None if failed)
@@ -206,4 +208,7 @@ class Connect4:
 
 
 if __name__ == "__main__":
-    myGame = Connect4()
+    myGame = Connect4(8,7)
+    myGame.register_player(4698, "franz")
+    myGame.check_move(1, 'X')
+    print(myGame.board)
