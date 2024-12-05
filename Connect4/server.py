@@ -1,7 +1,9 @@
 import uuid
-
+import json # not needed, if names don't need to be generated
+import random # dito
+import os # dito
 import socket                                               # to get own IP
-from flask import Flask, request, jsonify                   # for api
+from flask import Flask, request, jsonify, current_app                   # for api
 from flask_swagger_ui import get_swaggerui_blueprint        # for swagger documentation
 
 
@@ -26,7 +28,7 @@ class Connect4Server:
         - Expose API Methods
         """
 
-        self.game = Connect4()  # Connect4 game instance
+        self.game = Connect4(8,7)  # Connect4 game instance
         self.app = Flask(__name__)  # Flask app instance
 
         # Swagger UI Configuration
@@ -64,6 +66,7 @@ class Connect4Server:
         @self.app.route('/connect4/status', methods=['GET'])
         def get_status():
             # TODO: return a jasonified version of the game status
+            # ERROR: game.get_status returns a tuple, not a dictionary
             status = self.game.get_status()
             return jsonify(status)
 
@@ -72,9 +75,33 @@ class Connect4Server:
         @self.app.route('/connect4/register', methods=['POST'])
         def register_player():
             # TODO Register the player and return the ICON
-            icon = self.game.register_player()
+            # ERROR: game.register_player takes a player UUID and a name
+            data = request.get_json()
+            uuid = data.get("player_id")
+            name = data.get("name")
+            if not name:
+                # because the API doesn't expose the players name, if none is given a random one will be assigned
+
+                #with open(os.getcwd()+"/Connect4/girl_boy_names_2023.json") as json_file:
+                with current_app.open_resource('application/girl_boy_names_2023.json') as json_file:
+                    dict = json.load(json_file)
+                    # choose if boy or girl with the ratio of girls / boys in the python course (0.05)
+                    choice = random.randint(1,80)
+                    if choice > 4:
+                        # boy
+                        names = dict.get("boys")
+                    else:
+                        # girl
+                        names = dict.get("girls")
+                name = names[random.randint(0, len(names)-1)]
+                print(name)
+            if not uuid:
+                print("No uuid provided")
+                return jsonify({"description": "No uuid provided"}), 400
+            icon = self.game.register_player(uuid, name)
             if icon is None:
-                return jsonify({"error": "Maximum number of players reached"}), 400
+                print("Maximum number of players reached")
+                return jsonify({"description": "Maximum number of players reached"}), 400
             return jsonify(icon)
 
 
@@ -82,8 +109,13 @@ class Connect4Server:
         @self.app.route('/connect4/board', methods=['GET'])
         def get_board():
             # TODO correctly return the Board
+            # note that game.get_board() also returns x and o (lowercase) after the game was won,
+            # but we don't care if the game crashes, when the game is finished
+            # ERROR: the format of the board from get_board does not match the specification
             board = self.game.get_board()
-            return jsonify(board)
+            # rearrange y positions so that 0 is at the top
+            board = [[board[x][y] for y in range(len(board[x])-1, -1, -1)] for x in range(len(board))]
+            return jsonify({"board":board})
 
         # 4. Expose move method
         @self.app.route('/connect4/make_move', methods=['POST'])
