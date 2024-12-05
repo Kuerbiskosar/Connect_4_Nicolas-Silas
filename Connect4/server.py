@@ -120,8 +120,10 @@ class Connect4Server:
         # 4. Expose move method
         @self.app.route('/connect4/make_move', methods=['POST'])
         def make_move():
-            # TODO: make move and return success if made
-            pass
+            drop_position, icon = request.get_json()
+            check_move = self.game.check_move(drop_position, icon)
+            return jsonify(check_move)
+        
 
 
     def run(self, debug=True, host='0.0.0.0', port=5000):
