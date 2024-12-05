@@ -118,7 +118,7 @@ class Player_Local(Player):
         Returns:
             bool: True if it's the player's turn, False otherwise.
         """
-        if self.game.get_status()[0] == self.icon:
+        if self.game.get_status()["active_id"] == self.id:
             return True
         else: return False
 

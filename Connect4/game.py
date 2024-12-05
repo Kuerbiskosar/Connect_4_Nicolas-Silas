@@ -31,7 +31,7 @@ class Connect4:
             - etc.
         """
         self.board = np.empty((width, height), dtype=str)    # Board 8x7 with zeros representing empty cells
-        self.player_info = {}                       # Dictionary to map player UUID to icon
+        self.player_info = {}                       # Dictionary to map player UUID to a tuple with icon and name
         self.players = []                           # a list with the players UUID's
         self.activeplayer = 0                       # index of the active player in the list 
         self.turn_counter = 0                       # To keep track of whose turn it is
@@ -52,7 +52,10 @@ class Connect4:
         """
         # TODO: change to follow api specification (currently: icon, winner, turn_counter. should be: icon, uuid, winner, turn_counter)
         # TODO: probably prettier as a dictionary (get values by key)
-        return (self.player_info[self.players[self.activeplayer]][0], self.winner, self.turn_counter)
+        return {"active_player":self.player_info[self.players[self.activeplayer]][0],
+                "active_id":self.players[self.activeplayer],
+                "winner":self.winner,
+                "turn_number":self.turn_counter}
 
 
     def register_player(self, player_id: uuid.UUID, name: str) -> str:

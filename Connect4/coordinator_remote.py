@@ -55,9 +55,9 @@ class Coordinator_Remote:
         This method checks the game status until the second player is detected,
         indicating that the game can start.
         """
-        turn_number = self.game.get_status()[-1]
+        turn_number = self.game.get_status()["turn_number"]
         while turn_number < 0:
-            turn_number = self.game.get_status()[-1]
+            turn_number = self.game.get_status()["turn_number"]
             print("waiting for opponent to connect")
             sleep(1) 
 
@@ -69,8 +69,8 @@ class Coordinator_Remote:
         checks for a winner, and visualizes the game board.
         """
         status = self.game.get_status()
-        winner = status[-2] # the UUID of the winner
-        turn_counter = status[-1]
+        winner = status["winner"] # the UUID of the winner
+        turn_counter = status["turn_number"]
         while not self.game.winner and self.game.turn_counter < self.game.width * self.game.height:
             currentPlayer = self.player1 if self.player1.is_my_turn() else self.player2
             currentPlayer.make_move()

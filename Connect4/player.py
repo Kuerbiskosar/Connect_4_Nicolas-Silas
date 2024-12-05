@@ -42,7 +42,7 @@ class Player(ABC):
         raise NotImplementedError("Subclasses must implement 'is_my_turn'")
 
     @abstractmethod
-    def get_game_status(self) -> tuple[str,str,bool,int]:
+    def get_game_status(self) -> dict:
         """
         Get the game's current status.
             - who is the active player?

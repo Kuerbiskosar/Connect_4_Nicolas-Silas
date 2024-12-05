@@ -30,8 +30,10 @@ class Connect4_remote:
         active_id = response.json().get("active_id")
         winner = response.json().get("winner")
         turn_number = response.json().get("turn_number")
-        return active_player, active_id, winner, turn_number
-
+        return {"active_player":active_player,
+                "active_id":active_id,
+                "winner":winner,
+                "turn_number":turn_number}
 
     def register_player(self, player_id:uuid.UUID, name: str = None):
         """ 

@@ -65,8 +65,6 @@ class Connect4Server:
         # 1. Expose get_status method
         @self.app.route('/connect4/status', methods=['GET'])
         def get_status():
-            # TODO: return a jasonified version of the game status
-            # ERROR: game.get_status returns a tuple, not a dictionary
             status = self.game.get_status()
             return jsonify(status)
 
