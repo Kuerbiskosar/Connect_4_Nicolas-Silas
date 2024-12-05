@@ -63,7 +63,6 @@ class Connect4Server:
         # 1. Expose get_status method
         @self.app.route('/connect4/status', methods=['GET'])
         def get_status():
-            # TODO: return a jasonified version of the game status
             status = self.game.get_status()
             return jsonify(status)
 
@@ -71,7 +70,6 @@ class Connect4Server:
         # 2. Expose register_player method
         @self.app.route('/connect4/register', methods=['POST'])
         def register_player():
-            # TODO Register the player and return the ICON
             icon = self.game.register_player()
             if icon is None:
                 return jsonify({"error": "Maximum number of players reached"}), 400
@@ -88,8 +86,10 @@ class Connect4Server:
         # 4. Expose move method
         @self.app.route('/connect4/make_move', methods=['POST'])
         def make_move():
-            # TODO: make move and return success if made
-            pass
+            drop_position, icon = request.get_json()
+            check_move = self.game.check_move(drop_position, icon)
+            return jsonify(check_move)
+        
 
 
     def run(self, debug=True, host='0.0.0.0', port=5000):
