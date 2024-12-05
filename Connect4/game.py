@@ -21,7 +21,7 @@ class Connect4:
             -> executes the methods of a Game object
     """
     
-    def __init__(self, width, height) -> None:
+    def __init__(self, width = 8, height = 7) -> None:
         """ 
         Init a Connect 4 Game
             - Create an empty Board
@@ -51,6 +51,7 @@ class Connect4:
             - what turn is it?
         """
         # TODO: change to follow api specification (currently: icon, winner, turn_counter. should be: icon, uuid, winner, turn_counter)
+        # TODO: probably prettier as a dictionary (get values by key)
         return (self.player_info[self.players[self.activeplayer]][0], self.winner, self.turn_counter)
 
 

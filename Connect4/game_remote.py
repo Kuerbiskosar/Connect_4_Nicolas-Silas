@@ -4,7 +4,7 @@ import requests
 import json # used to read ip's from file
 import os # used to read ip's from file
 
-class Game_remote:
+class Connect4_remote:
     """
     Talks to a game instance on a remote server through api calls
     Other scripts can interact with this class the same way they can with the game class (after it was initiated)
@@ -44,7 +44,7 @@ class Game_remote:
         Returns:
             icon:       Player Icon (or None if failed)
         """
-        Player = {"player_id" : player_id, "name" : name}
+        Player = {"player_id" : str(player_id), "name" : name}
 
         response = requests.post(self.url+"/connect4/register", json=Player)
         self.__check_response(response)
@@ -100,6 +100,6 @@ if __name__ == "__main__":
             local_url = 'http://'+adresses.get("offshore")
     else:
         local_url = 'http://'+input("please input the desired adress (if given an ip, follow it with :<portnumber>)")
-    game = Game_remote(local_url)
+    game = Connect4_remote(local_url)
     game.register_player(4856345)
     game.get_board()
