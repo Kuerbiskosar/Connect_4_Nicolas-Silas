@@ -26,7 +26,7 @@ class Connect4Server:
         - Expose API Methods
         """
 
-        self.game = Connect4()  # Connect4 game instance
+        self.game = Connect4  # Connect4 game instance
         self.app = Flask(__name__)  # Flask app instance
 
         # Swagger UI Configuration
