@@ -100,7 +100,7 @@ class Connect4Server:
             if icon is None:
                 print("Maximum number of players reached")
                 return jsonify({"description": "Maximum number of players reached"}), 400
-            return jsonify(icon)
+            return jsonify({"icon":icon})
 
 
         # 3. Expose get_board method
@@ -116,7 +116,7 @@ class Connect4Server:
             return jsonify({"board":board})
 
         # 4. Expose move method
-        @self.app.route('/connect4/make_move', methods=['POST'])
+        @self.app.route('/connect4/check_move', methods=['POST'])
         def make_move():
             drop_position, icon = request.get_json()
             check_move = self.game.check_move(drop_position, icon)

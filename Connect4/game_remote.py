@@ -50,6 +50,8 @@ class Connect4_remote:
 
         response = requests.post(self.url+"/connect4/register", json=Player)
         self.__check_response(response)
+        return response.json().get("icon")
+
 
     def get_board(self)-> np.ndarray:
         """ 

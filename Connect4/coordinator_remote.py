@@ -60,6 +60,7 @@ class Coordinator_Remote:
             turn_number = self.game.get_status()["turn_number"]
             print("waiting for opponent to connect")
             sleep(1) 
+        self.player.visualize()
 
     def play(self):
         """ 
@@ -68,18 +69,33 @@ class Coordinator_Remote:
         This method manages the game loop, where players take turns making moves,
         checks for a winner, and visualizes the game board.
         """
+        board = self.game.get_board()
+        width = len(board)
+        height = len(board[0])
+
         status = self.game.get_status()
         winner = status["winner"] # the UUID of the winner
         turn_counter = status["turn_number"]
-        while not self.game.winner and self.game.turn_counter < self.game.width * self.game.height:
-            currentPlayer = self.player1 if self.player1.is_my_turn() else self.player2
-            currentPlayer.make_move()
+        active_player = status["active_player"]
+
+        while not winner and turn_counter < width * height:
+            if active_player == self.player.icon:
+                self.player.make_move()
             if winner == self.player.id:
-                currentPlayer.celebrate_win()
+                self.player.celebrate_win()
                 exit()
             if winner != None:
                 self.player.visualize()
                 print("Your opponent wins! sad times.")
+
+            status = self.game.get_status()
+            winner = status["winner"] # the UUID of the winner
+            turn_counter = status["turn_number"]
+            active_player = status["active_player"]
+            print(active_player)
+            print(f"self.player.icon: {self.player.icon}")
+            sleep(1)
+       
         print('The game is a draw.')
 
 # To start a game

@@ -176,13 +176,15 @@ class Player_Local(Player):
         Returns:
             int: The column chosen by the player for the move.
         """
+        board = self.game.get_board()
+        width = len(board)
         while True:
             self.visualize()
             action = self.get_action()
             if action == Action.drop:
                 if self.game.check_move(self.drop_position, self.icon):
                     return self.drop_position
-            elif action == Action.right and self.drop_position < self.game.width-1:
+            elif action == Action.right and self.drop_position < width-1:
                 self.drop_position += 1
             elif action == Action.left and self.drop_position > 0:
                 self.drop_position -=1
@@ -192,6 +194,7 @@ class Player_Local(Player):
         Visualize the current state of the Connect 4 board by printing it to the console.
         """
         board = self.game.get_board()
+        width = len(board)
         emptyIcon = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Black, background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True)
         icon1 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Yellow, background_color=ansi_wrapper.TerminalColors.Blue, background_bright = True)
         icon2 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Red, background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True)
@@ -210,14 +213,14 @@ class Player_Local(Player):
         # range from width (exclusive) to 0 (inclusive) because the board position 0,0 is at the bottom left
         # only print the header, when the game is not yet over
         if self.drop_position >= 0:
-            output_header = ["   "]*(self.game.width+1)
+            output_header = ["   "]*(width+1)
             output_header[self.drop_position] = myIcon
             output_header = ''.join(output_header)
             output += output_header + "\n"
         else:
             output += "\n"
         for y in range(height-1,-1,-1):
-            for x in range(self.game.width):
+            for x in range(width):
                 if board[x,y] == BoardIcon.empty.value:
                     output += emptyIcon
                 elif board[x,y] == BoardIcon.player1.value:

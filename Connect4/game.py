@@ -34,7 +34,7 @@ class Connect4:
         self.player_info = {}                       # Dictionary to map player UUID to a tuple with icon and name
         self.players = []                           # a list with the players UUID's
         self.activeplayer = 0                       # index of the active player in the list 
-        self.turn_counter = 0                       # To keep track of whose turn it is
+        self.turn_counter = -1                       # To keep track of whose turn it is
         self.winner = None                          # Holds the winner's ID when a win is detected
         self.width = width
         self.height = height
@@ -84,6 +84,9 @@ class Connect4:
             self.player_info[player_id] = (icon, name)
             self.players.append(player_id)
             print(self.player_info)
+            if len(self.player_info) == 2:
+                print("two players makes a party")
+                self.turn_counter = 0
             return icon
         return None
 
