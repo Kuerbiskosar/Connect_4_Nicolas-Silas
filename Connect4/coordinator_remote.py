@@ -73,30 +73,22 @@ class Coordinator_Remote:
         width = len(board)
         height = len(board[0])
 
-        status = self.game.get_status()
-        winner = status["winner"] # the UUID of the winner
-        turn_counter = status["turn_number"]
-        active_player = status["active_player"]
-
-        while not winner and turn_counter < width * height:
-            if active_player == self.player.icon:
-                self.player.make_move()
-            if winner == self.player.id:
-                self.player.celebrate_win()
-                exit()
-            if winner != None:
-                self.player.visualize()
-                print("Your opponent wins! sad times.")
-
+        while True:
             status = self.game.get_status()
-            winner = status["winner"] # the UUID of the winner
-            turn_counter = status["turn_number"]
-            active_player = status["active_player"]
-            print(active_player)
-            print(f"self.player.icon: {self.player.icon}")
+            winner = status.get("winner")
+
+            if winner:
+                print(f"{self.player.name} wins!")
+                break
+
+            if status["turn_number"] >= width * height:
+                print("The game is a draw.")
+                break
+
+            if status["active_player"] == self.player.icon:
+                self.player.make_move()
+
             sleep(1)
-       
-        print('The game is a draw.')
 
 # To start a game
 if __name__ == "__main__":
