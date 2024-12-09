@@ -118,8 +118,12 @@ class Connect4Server:
         # 4. Expose move method
         @self.app.route('/connect4/check_move', methods=['POST'])
         def make_move():
-            drop_position, icon = request.get_json()
-            check_move = self.game.check_move(drop_position, icon)
+            drop_position = request.get_json().get("column")
+            drop_position = int(drop_position)
+            id = str(request.get_json().get("player_id"))
+            check_move = self.game.check_move(drop_position, id = id)
+            if check_move == False:
+                return jsonify({"description": "illegal move"}), 400
             return jsonify(check_move)
         
 

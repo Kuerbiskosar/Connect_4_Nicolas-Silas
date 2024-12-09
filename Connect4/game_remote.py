@@ -81,10 +81,17 @@ class Connect4_remote:
             bool    True if the move was valid, false otherwise
         """
         #TODO change game and players to check move via uuid instead of icon
-        move = {"column":column, "player_id":player_id}
+        move = {"column":column, "player_id":str(player_id)}
+        print(move)
         response = requests.post(self.url+"/connect4/check_move", json=move)
+        if response.status_code == 400:
+            return False
+        if response.status_code == 200:
+            return True
         self.__check_response(response)
-        pass
+        # if the code reaches this point, the response was between 201 and 299
+        # this is undefined behaviour, thus we raise an error
+        raise RuntimeError(f"Server response not as specified by the api: {response.status_code}")
 
     def __check_response(self, response):
         if response.status_code < 200 or response.status_code > 299:

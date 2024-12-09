@@ -101,7 +101,7 @@ class Connect4:
         return self.board
 
 
-    def check_move(self, column:int, icon:str) -> bool:
+    def check_move(self, column:int, id:str = None, icon:str = None) -> bool:
         """ 
         Check move of a certain player is legal
             If a certain player can make the requested move
@@ -113,6 +113,9 @@ class Connect4:
         Returns:
             bool    True if the move was valid, false otherwise
         """
+        if icon == None:
+            print(id)
+            icon = self.player_info.get(id)[0]
         for i in range(len(self.board[column])):
             if self.board[column][i] == '':
                 self.board[column][i] = icon
@@ -217,5 +220,5 @@ class Connect4:
 if __name__ == "__main__":
     myGame = Connect4(8,7)
     myGame.register_player(4698, "franz")
-    myGame.check_move(1, 'X')
+    myGame.check_move(1, 4698)
     print(myGame.board)
