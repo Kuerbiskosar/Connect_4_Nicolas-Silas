@@ -179,6 +179,7 @@ class Player_Local(Player):
         board = self.game.get_board()
         width = len(board)
         while True:
+            # TODO: only refetch board from server, when the opponend just played (save board locally)
             self.visualize()
             action = self.get_action()
             if action == Action.drop:

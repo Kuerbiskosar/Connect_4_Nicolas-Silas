@@ -127,7 +127,7 @@ if __name__ == "__main__":
         #api_url = "http://localhost:5000"  # Connect 4 API server URL
         api_url = "http://127.0.0.1:5000"
     else:
-        api_url = input("url: http://<your input> \n example input: 127.0.1.1:500 \n")
+        api_url = "http://" + input("url: http://<your input> \n example input: 127.0.1.1:500 \n")
     
     # Uncomment the following lines to specify different URLs
     # pc_url = "http://172.19.176.1:5000"
