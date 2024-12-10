@@ -1,0 +1,161 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Connect 4 API",
+      "description": "API for playing Connect 4",
+      "contact": {
+        "name": "Developer",
+        "url": "http://localhost:5000/swagger/connect4/"
+      }
+    },
+    "host": "localhost:5000",
+    "basePath": "/",
+    "schemes": ["http"],
+    "paths": {
+      "/": {
+        "get": {
+          "summary": "Welcome Message",
+          "description": "Provides a welcome message for the Connect 4 API.",
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "schema": {
+                "type": "string",
+                "example": "Welcome to the Connect 4 API!"
+              }
+            }
+          }
+        }
+      },
+      "/connect4/status": {
+        "get": {
+          "summary": "Get Game Status",
+          "description": "Retrieves the current game status, including player turns and game state.",
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "schema": {
+                "type": "object"
+              }
+            },
+            "500": {
+              "description": "Failed to get game status"
+            }
+          }
+        }
+      },
+      "/connect4/register": {
+        "post": {
+          "summary": "Register a Player",
+          "description": "Registers a new player to the game.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Player registration details",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "player_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Player registered successfully",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "icon": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request - Missing or invalid data"
+            },
+            "500": {
+              "description": "Failed to register player"
+            }
+          }
+        }
+      },
+      "/connect4/board": {
+        "get": {
+          "summary": "Get Game Board",
+          "description": "Retrieves the current game board state.",
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "board": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Failed to retrieve board"
+            }
+          }
+        }
+      },
+      "/connect4/check_move": {
+        "post": {
+          "summary": "Make a Move",
+          "description": "Checks and applies a player's move.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Move details",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "column": {
+                    "type": "integer"
+                  },
+                  "player_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Move applied successfully",
+              "schema": {
+                "type": "object"
+              }
+            },
+            "400": {
+              "description": "Bad Request - Illegal move or missing data"
+            },
+            "500": {
+              "description": "Failed to make move"
+            }
+          }
+        }
+      }
+    }
+  }
+  
