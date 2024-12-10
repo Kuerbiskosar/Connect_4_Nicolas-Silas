@@ -116,7 +116,7 @@ class Player_Raspi_Local(Player_Local):
         
         board = self.game.get_board()
         # visualize the choice on the top of the board
-        if self.drop_position > 0 and self.is_my_turn():
+        if self.drop_position >= 0 and self.is_my_turn():
             if self.icon == BoardIcon.player1.value:
                 highlight = [255, 255, 0]  # Yellow for Player 1
             elif self.icon == BoardIcon.player2.value:
