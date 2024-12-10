@@ -8,9 +8,8 @@ import ansi_wrapper
 import sys
 
 #because msvcrt only runs on windows, getch needs to be imported, when running on linux
-#TODO: Find the recommended way to do this
 if sys.platform.startswith('win'): #type: ignore #to suppress the pylance warning on linux
-    from msvcrt import getch # to detect keyboard input TODO: add as dependency
+    from msvcrt import getch # to detect keyboard input
     isLinux = False
 elif sys.platform.startswith('linux'):
     from getch import getch #type: ignore #to ignore the pylance warning on windows
@@ -98,6 +97,7 @@ class Player_Local(Player):
         super().__init__()  # Initialize id and icon from the abstract Player class
         self.game = game
         self.icon = self.register_in_game()
+        self.board = None # variable to hold the board, to reduce server calls
 
 
     def register_in_game(self) -> str:
@@ -135,7 +135,6 @@ class Player_Local(Player):
 
 
     def get_action(self) -> Action:
-        #TODO: unify linux and windows commands (and make arrow keys work on linux)
         """reads input from the user, until the keypress corresponds to a action in the game"""
         # gets user input until a key that does something is pressed
         while True:
@@ -177,10 +176,10 @@ class Player_Local(Player):
             int: The column chosen by the player for the move.
         """
         board = self.game.get_board()
+        self.board = board
         width = len(board)
         while True:
-            # TODO: only refetch board from server, when the opponend just played (save board locally)
-            self.visualize()
+            self.visualize(fetch_board=False)
             action = self.get_action()
             if action == Action.drop:
                 if self.game.check_move(self.drop_position, self.id):
@@ -190,11 +189,20 @@ class Player_Local(Player):
             elif action == Action.left and self.drop_position > 0:
                 self.drop_position -=1
     
-    def visualize(self) -> None:
+    def visualize(self, fetch_board = True, write_turn = True) -> None:
         """
         Visualize the current state of the Connect 4 board by printing it to the console.
+        Parameters:
+        - fetch_board
+            if True or if no board was fetched before, the function calls game.get_board()
+            used to reduce server calls
+        - write_turn
+            if True, write who's turn it is. (Should not be written, when the game ended)
         """
-        board = self.game.get_board()
+        if fetch_board or self.board is None:
+            board = self.game.get_board()
+        else:
+            board = self.board
         width = len(board)
         emptyIcon = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Black, background_color=ansi_wrapper.TerminalColors.Blue, background_bright=True)
         icon1 = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Yellow, background_color=ansi_wrapper.TerminalColors.Blue, background_bright = True)
@@ -241,6 +249,8 @@ class Player_Local(Player):
         ansi_wrapper.clear_screen()
         ansi_wrapper.set_cursorpos(0,0) # sets the cursor position to the top
         print(output)
+        if not write_turn:
+            return
         if self.is_my_turn():
             print(f"{self.name}! it is your turn!")
             print("select in which row you want to place your coin, by pressing <a>/<d> or <right arrow> / <Left arrow>")
@@ -253,7 +263,7 @@ class Player_Local(Player):
         Celebration of Local CLI Player
         """
         self.drop_position = -1
-        self.visualize()
+        self.visualize(write_turn=False)
         print(f'Congratulations, {self.name} wins!')
 
 
