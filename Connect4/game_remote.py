@@ -67,6 +67,39 @@ class Connect4_remote:
         # x and y ~should~ be correct
         board = np.array([[returned_board[x][y] for y in range(len(returned_board[x])-1, -1, -1)] for x in range(len(returned_board))])
         return board
+    
+    def check_winner(self):
+        """
+        Check for a winner based on the current board state.
+        """
+        board = self.get_board()
+        rows, cols = len(board), len(board[0])
+
+        def check_direction(start_x, start_y, dx, dy, player):
+            """Check four consecutive cells in a specific direction for the same player."""
+            for i in range(4):
+                x, y = start_x + i * dx, start_y + i * dy
+                if not (0 <= x < rows and 0 <= y < cols and board[x][y] == player):
+                    return False
+            return True
+
+        for x in range(rows):
+            for y in range(cols):
+                player = board[x][y]
+                if player == "":
+                    continue
+                # Check all directions: horizontal, vertical, diagonals
+                if (
+                    check_direction(x, y, 1, 0, player) or  # Horizontal
+                    check_direction(x, y, 0, 1, player) or  # Vertical
+                    check_direction(x, y, 1, 1, player) or  # Diagonal /
+                    check_direction(x, y, 1, -1, player)    # Diagonal \
+                ):
+                    self.winner = player
+                    return player
+
+        self.winner = None
+        return None
 
     def check_move(self, column:int, player_id:uuid) -> bool:
         """ 
