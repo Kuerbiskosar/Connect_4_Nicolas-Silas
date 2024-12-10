@@ -47,8 +47,38 @@ def set_cursorpos(x:int,y:int):
     """moves the terminal cursor to the specified location"""
     print(f"\033[{y};{x}H", end='')
 
+def clear_line():
+    """
+    Clears the entire line, where the cursor is positioned and moves the cursor to the beginning of that line
+    Returns: None
+    """
+
+    print(f"\033[2K", end = "") # deletes the whole line
+    print(f"\033[0E", end = "") # moves cursor to the beginning of the line
+    #print("\033M") # carriage return
+    #print("                                                                                                 ", end = "")
+    #print("\033M") # carriage return
+    #print("\033[\0331B", end = "") # moves cursor down (because carriage return moves it up)
+
 
 if __name__ == "__main__":
+    import time
     #print("\033[\34;44mwell...")
     print("Hallo")
     print(colorprint("⬤", foreground_color=TerminalColors.Yellow, background_color=TerminalColors.Blue, underline=False,blink=False))
+    print("wowie")
+    while True:
+        print("bober    ", end = "", flush= True)
+        time.sleep(0.2)
+        clear_line()
+        print("bober .  ", end = "", flush= True)
+        time.sleep(0.2)
+        clear_line()
+        print("bober .. ", end = "", flush= True)
+        time.sleep(0.2)
+        clear_line()
+        print("bober ...", end = "", flush= True)
+        time.sleep(0.2)
+        clear_line()
+    #print("dulibab")
+    #print("dulibab")

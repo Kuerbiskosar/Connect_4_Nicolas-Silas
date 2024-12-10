@@ -1,6 +1,7 @@
 from time import sleep
 from game_remote import Connect4_remote
 from os import path # to check if we are wearing a senseHat
+import ansi_wrapper
 
 class Coordinator_Remote:
     """ 
@@ -58,8 +59,21 @@ class Coordinator_Remote:
         turn_number = self.game.get_status()["turn_number"]
         while turn_number < 0:
             turn_number = self.game.get_status()["turn_number"]
-            print("waiting for opponent to connect")
-            sleep(1) 
+            wait_time = 1
+            partial_wait_time = wait_time/4
+
+            print("waiting for opponent to connect    ", flush=True, end = "")
+            sleep(partial_wait_time) 
+            ansi_wrapper.clear_line()
+            print("waiting for opponent to connect .  ",flush=True, end = "")
+            sleep(partial_wait_time) 
+            ansi_wrapper.clear_line()
+            print("waiting for opponent to connect .. ",flush=True, end = "")
+            sleep(partial_wait_time) 
+            ansi_wrapper.clear_line()
+            print("waiting for opponent to connect ...",flush=True, end = "")
+            sleep(partial_wait_time) 
+            ansi_wrapper.clear_line()
         self.player.visualize()
 
     def play(self):
@@ -81,22 +95,24 @@ class Coordinator_Remote:
         while not winner and turn_counter < width * height:
             if active_player == self.player.icon:
                 self.player.make_move()
-            if winner == self.player.id:
+                self.player.visualize() # visualize the move that was made
+
+            status = self.game.get_status()
+            winner = status["winner"] # the UUID of the winner
+            turn_counter = status["turn_number"]
+            active_player = status["active_player"]
+
+            if winner == str(self.player.id): # winner id's returned from the game are strings
                 self.player.celebrate_win()
                 exit()
             if winner != None:
                 self.player.visualize()
                 print("Your opponent wins! sad times.")
 
-            status = self.game.get_status()
-            winner = status["winner"] # the UUID of the winner
-            turn_counter = status["turn_number"]
-            active_player = status["active_player"]
-            print(active_player)
-            print(f"self.player.icon: {self.player.icon}")
-            sleep(1)
-       
-        print('The game is a draw.')
+            # wait, in order to not overload the server with requests
+            sleep(0.5)
+        if turn_counter >= width*height:
+            print('The game is a draw.')
 
 # To start a game
 if __name__ == "__main__":
@@ -105,6 +121,8 @@ if __name__ == "__main__":
  [1] - localhost:5000
  [2] - enter url
 """)
+#TODO: save and read adresses from ip_address.json (to quickly reconnect to a server)
+# the reading part of that was already implemented in game_remote.py
     if server_location == "1":
         #api_url = "http://localhost:5000"  # Connect 4 API server URL
         api_url = "http://127.0.0.1:5000"

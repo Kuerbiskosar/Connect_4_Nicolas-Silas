@@ -114,15 +114,16 @@ class Player_Raspi_Local(Player_Local):
         # Prepare the LED matrix (8x8)
         matrix = [[nonboard for _ in range(8)] for _ in range(8)]
         
-        # visualize the choice on the top of the board
-        if self.icon == BoardIcon.player1.value:
-            highlight = [255, 255, 0]  # Yellow for Player 1
-        elif self.icon == BoardIcon.player2.value:
-            highlight = [255, 0, 0]  # Red for Player 2
-        top_row = [highlight if col == self.drop_position else nonboard for col in range(8)]
-
         board = self.game.get_board()
-        matrix[7-len(board[0])] = top_row 
+        # visualize the choice on the top of the board
+        if self.drop_position > 0 and self.is_my_turn():
+            if self.icon == BoardIcon.player1.value:
+                highlight = [255, 255, 0]  # Yellow for Player 1
+            elif self.icon == BoardIcon.player2.value:
+                highlight = [255, 0, 0]  # Red for Player 2
+            top_row = [highlight if col == self.drop_position else nonboard for col in range(8)]
+
+            matrix[7-len(board[0])] = top_row 
 
         # Map the Connect4 board onto the LED matrix
         for x in range(len(board)):

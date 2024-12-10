@@ -82,7 +82,6 @@ class Connect4_remote:
         """
         #TODO change game and players to check move via uuid instead of icon
         move = {"column":column, "player_id":str(player_id)}
-        print(move)
         response = requests.post(self.url+"/connect4/check_move", json=move)
         if response.status_code == 400:
             return False

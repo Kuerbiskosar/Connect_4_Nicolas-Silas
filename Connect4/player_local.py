@@ -118,7 +118,7 @@ class Player_Local(Player):
         Returns:
             bool: True if it's the player's turn, False otherwise.
         """
-        if self.game.get_status()["active_id"] == self.id:
+        if str(self.game.get_status()["active_id"]) == str(self.id): # we need to cast the uuid to a str, because the remote game returns a string
             return True
         else: return False
 
@@ -211,8 +211,8 @@ class Player_Local(Player):
         else:
             myIcon = ansi_wrapper.colorprint(" ⬤ ",ansi_wrapper.TerminalColors.Red, background_bright=True)
         # range from width (exclusive) to 0 (inclusive) because the board position 0,0 is at the bottom left
-        # only print the header, when the game is not yet over
-        if self.drop_position >= 0:
+        # only print the header, when the game is not yet over or it is my turn
+        if self.drop_position >= 0 and self.is_my_turn():
             output_header = ["   "]*(width+1)
             output_header[self.drop_position] = myIcon
             output_header = ''.join(output_header)
@@ -240,8 +240,11 @@ class Player_Local(Player):
         ansi_wrapper.clear_screen()
         ansi_wrapper.set_cursorpos(0,0) # sets the cursor position to the top
         print(output)
-        print(f"{self.name}! it is your turn!")
-        print("select in which row you want to place your coin, by pressing <a>/<d> or <right arrow> / <Left arrow>")
+        if self.is_my_turn():
+            print(f"{self.name}! it is your turn!")
+            print("select in which row you want to place your coin, by pressing <a>/<d> or <right arrow> / <Left arrow>")
+        else:
+            print("waiting for the opponent to play")
         #print(myIcon)
 
     def celebrate_win(self) -> None:
