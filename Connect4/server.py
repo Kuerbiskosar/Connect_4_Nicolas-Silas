@@ -65,8 +65,11 @@ class Connect4Server:
         # 1. Expose get_status method
         @self.app.route('/connect4/status', methods=['GET'])
         def get_status():
-            status = self.game.get_status()
-            return jsonify(status)
+            try:
+                status = self.game.get_status()
+                return jsonify(status)
+            except Exception as e:
+                return jsonify({"error": "Failed to get game status", "details": str(e)}), 500
 
 
         # 2. Expose register_player method
@@ -74,33 +77,38 @@ class Connect4Server:
         def register_player():
             # TODO Register the player and return the ICON
             # ERROR: game.register_player takes a player UUID and a name
-            data = request.get_json()
-            uuid = data.get("player_id")
-            name = data.get("name")
-            if not name:
-                # because the API doesn't expose the players name, if none is given a random one will be assigned
+            try:
+                data = request.get_json()
+                if not data:
+                    return jsonify({"error": "No data provided"}), 400
+                uuid = data.get("player_id")
+                name = data.get("name")
+                if not name:
+                    # because the API doesn't expose the players name, if none is given a random one will be assigned
 
-                #with open(os.getcwd()+"/Connect4/girl_boy_names_2023.json") as json_file:
-                with current_app.open_resource('application/girl_boy_names_2023.json') as json_file:
-                    dict = json.load(json_file)
-                    # choose if boy or girl with the ratio of girls / boys in the python course (0.05)
-                    choice = random.randint(1,80)
-                    if choice > 4:
-                        # boy
-                        names = dict.get("boys")
-                    else:
-                        # girl
-                        names = dict.get("girls")
-                name = names[random.randint(0, len(names)-1)]
-                print(name)
-            if not uuid:
-                print("No uuid provided")
-                return jsonify({"description": "No uuid provided"}), 400
-            icon = self.game.register_player(uuid, name)
-            if icon is None:
-                print("Maximum number of players reached")
-                return jsonify({"description": "Maximum number of players reached"}), 400
-            return jsonify({"icon":icon})
+                    #with open(os.getcwd()+"/Connect4/girl_boy_names_2023.json") as json_file:
+                    with current_app.open_resource('application/girl_boy_names_2023.json') as json_file:
+                        dict = json.load(json_file)
+                        # choose if boy or girl with the ratio of girls / boys in the python course (0.05)
+                        choice = random.randint(1,80)
+                        if choice > 4:
+                            # boy
+                            names = dict.get("boys")
+                        else:
+                            # girl
+                            names = dict.get("girls")
+                    name = names[random.randint(0, len(names)-1)]
+                    print(name)
+                if not uuid:
+                    print("No uuid provided")
+                    return jsonify({"description": "No uuid provided"}), 400
+                icon = self.game.register_player(uuid, name)
+                if icon is None:
+                    print("Maximum number of players reached")
+                    return jsonify({"description": "Maximum number of players reached"}), 400
+                return jsonify({"icon":icon})
+            except Exception as e:
+                return jsonify({"error": "Failed to register player", "details": str(e)}), 500
 
 
         # 3. Expose get_board method
@@ -110,21 +118,32 @@ class Connect4Server:
             # note that game.get_board() also returns x and o (lowercase) after the game was won,
             # but we don't care if the game crashes, when the game is finished
             # ERROR: the format of the board from get_board does not match the specification
-            board = self.game.get_board()
-            # rearrange y positions so that 0 is at the top
-            board = [[board[x][y] for y in range(len(board[x])-1, -1, -1)] for x in range(len(board))]
-            return jsonify({"board":board})
+            try:
+                board = self.game.get_board()
+                # rearrange y positions so that 0 is at the top
+                board = [[board[x][y] for y in range(len(board[x])-1, -1, -1)] for x in range(len(board))]
+                return jsonify({"board":board})
+            except Exception as e:
+                return jsonify({"error": "Failed to retrieve board", "details": str(e)}), 500
 
         # 4. Expose move method
         @self.app.route('/connect4/check_move', methods=['POST'])
         def make_move():
-            drop_position = request.get_json().get("column")
-            drop_position = int(drop_position)
-            id = str(request.get_json().get("player_id"))
-            check_move = self.game.check_move(drop_position, id = id)
-            if check_move == False:
-                return jsonify({"description": "illegal move"}), 400
-            return jsonify(check_move)
+            try:
+                data = request.get_json()
+                if not data:
+                    return jsonify({"error": "No data provided"}), 400
+                column = data.get("column")
+                player_id = data.get("player_id")
+                if column is None or player_id is None:
+                    return jsonify({"error": "Column and Player ID are required"}), 400
+                column = int(column)
+                check_move = self.game.check_move(column, id=player_id)
+                if not check_move:
+                    return jsonify({"error": "Illegal move"}), 400
+                return jsonify(check_move)
+            except Exception as e:
+                return jsonify({"error": "Failed to make move", "details": str(e)}), 500
         
 
 
