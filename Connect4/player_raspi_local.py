@@ -97,7 +97,7 @@ class Player_Raspi_Local(Player_Local):
         #self.sense.set_pixels(flattened_display)
 
 
-    def visualize(self) -> None:
+    def visualize(self, fetch_board = True, write_turn = True) -> None:
         """
         Override Visualization of Local Player
             Also Visualize on the Raspi 
@@ -114,7 +114,11 @@ class Player_Raspi_Local(Player_Local):
         # Prepare the LED matrix (8x8)
         matrix = [[nonboard for _ in range(8)] for _ in range(8)]
         
-        board = self.game.get_board()
+        if fetch_board or self.board is None:
+            board = self.game.get_board()
+        else:
+            board = self.board
+
         # visualize the choice on the top of the board
         if self.drop_position >= 0 and self.is_my_turn():
             if self.icon == BoardIcon.player1.value:
@@ -147,7 +151,7 @@ class Player_Raspi_Local(Player_Local):
         #self.visualize_choice(self.drop_position)
 
         # OPTIONAL: Visualize on CLI
-        super().visualize()
+        super().visualize(fetch_board, write_turn)
 
         #raise NotImplementedError(f" visualize on Raspi not yet implemented")
 
