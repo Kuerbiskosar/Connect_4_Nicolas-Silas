@@ -83,9 +83,8 @@ class Connect4:
 
             self.player_info[player_id] = (icon, name)
             self.players.append(player_id)
-            print(self.player_info)
             if len(self.player_info) == 2:
-                print("two players makes a party")
+                print("two players make a party")
                 self.turn_counter = 0
             return icon
         return None
@@ -113,9 +112,11 @@ class Connect4:
         Returns:
             bool    True if the move was valid, false otherwise
         """
-        if icon == None:
-            print(id)
+        if icon == None and id != None:
             icon = self.player_info.get(id)[0]
+        # if it is not the turn of the requesting player, mark the move as invalid
+        if self.player_info[self.players[self.activeplayer]][0] != icon:
+            return False
         for i in range(len(self.board[column])):
             if self.board[column][i] == '':
                 self.board[column][i] = icon

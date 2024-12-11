@@ -69,7 +69,7 @@ class Connect4Server:
                 status = self.game.get_status()
                 return jsonify(status)
             except Exception as e:
-                return jsonify({"error": "Failed to get game status", "details": str(e)}), 500
+                return jsonify({"description": "Failed to get game status", "details": str(e)}), 500
 
 
         # 2. Expose register_player method
@@ -121,10 +121,14 @@ class Connect4Server:
             try:
                 board = self.game.get_board()
                 # rearrange y positions so that 0 is at the top
-                board = [[board[x][y] for y in range(len(board[x])-1, -1, -1)] for x in range(len(board))]
+                board = [
+                        [board[collumn][row] for collumn in range(len(board))] # constructs a row of the board
+                         for row in range(len(board[0])-1, -1, -1) # collummns get flipped because the zero point of the game is at the bottom, 
+                                                                   #but the one that the server should return at the top
+                         ]
                 return jsonify({"board":board})
             except Exception as e:
-                return jsonify({"error": "Failed to retrieve board", "details": str(e)}), 500
+                return jsonify({"description": "Failed to retrieve board: {e}", "details": str(e)}), 500
 
         # 4. Expose move method
         @self.app.route('/connect4/check_move', methods=['POST'])
@@ -132,18 +136,18 @@ class Connect4Server:
             try:
                 data = request.get_json()
                 if not data:
-                    return jsonify({"error": "No data provided"}), 400
+                    return jsonify({"description": "No data provided"}), 400
                 column = data.get("column")
                 player_id = data.get("player_id")
                 if column is None or player_id is None:
-                    return jsonify({"error": "Column and Player ID are required"}), 400
+                    return jsonify({"description": "Column and Player ID are required"}), 400
                 column = int(column)
                 check_move = self.game.check_move(column, id=player_id)
                 if not check_move:
-                    return jsonify({"error": "Illegal move"}), 400
+                    return jsonify({"description": "Illegal move"}), 400
                 return jsonify(check_move)
             except Exception as e:
-                return jsonify({"error": "Failed to make move", "details": str(e)}), 500
+                return jsonify({"description": f"Failed to make move: {e}", "details": str(e)}), 500
         
 
 

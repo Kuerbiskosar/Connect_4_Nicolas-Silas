@@ -64,8 +64,13 @@ class Connect4_remote:
         self.__check_response(response)
         returned_board = response.json().get("board")
         # in the specification, the y axis 0 position is at the top. ours is at the bottom. that's why they have to be flipped.
-        # x and y ~should~ be correct
-        board = np.array([[returned_board[x][y] for y in range(len(returned_board[x])-1, -1, -1)] for x in range(len(returned_board))])
+        # x and y get switched too
+        board = np.array(
+            [
+                [returned_board[row][collumn] for row in range(len(returned_board)-1, -1, -1)] # construct a collumn (flipping the entries, to make zero at the bottom of the board)
+                for collumn in range(len(returned_board[0]))
+            ]
+        )
         return board
     
     def check_winner(self):
@@ -129,7 +134,7 @@ class Connect4_remote:
         if response.status_code < 200 or response.status_code > 299:
             print(r"a error occurred during server lookup -.- check https://developer.mozilla.org/en-US/docs/Web/HTTP/Status for more information (#notsponsored)")
             try:
-                description = response.json.get("description")
+                description = response.json().get("description")
             except:
                 description = "the server did not return an error description"
             raise RuntimeError(f"Server response {response.status_code, description}")
@@ -145,4 +150,6 @@ if __name__ == "__main__":
         local_url = 'http://'+input("please input the desired adress (if given an ip, follow it with :<portnumber>)")
     game = Connect4_remote(local_url)
     game.register_player(4856345)
+    game.check_move(2, player_id=4856345)
     game.get_board()
+    game.check_move(2, player_id=4856345)
