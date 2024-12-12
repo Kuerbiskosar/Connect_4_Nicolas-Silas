@@ -33,7 +33,7 @@ class Connect4Server:
 
         # Swagger UI Configuration
         SWAGGER_URL = '/swagger/connect4/'
-        API_URL = '/static/swagger.json'  # This should point to your static swagger.json file
+        API_URL = '/static/swagger.json'  # This points to the static swagger.json file
         
         swaggerui_blueprint = get_swaggerui_blueprint(
             SWAGGER_URL,
@@ -53,7 +53,11 @@ class Connect4Server:
 
     def setup_routes(self):
         """
-        Expose the following Methods
+        Expose the Methods
+            - /connect4/status
+            - /connect4/register
+            - /connect4/board
+            - /connect4/check_move
         """
         # Overall Description
         @self.app.route('/')

@@ -14,9 +14,10 @@ class Coordinator_Remote:
 
 
     Attributes:
-        api_url (str):      Address of Server, including Port Bsp: http://10.147.17.27:5000
-        player (Player):    Local Instance of ONE remote Player (Raspi or Normal)
-        sense (SenseHat):   Optional Local Instance of a SenseHat (if on Raspi)
+        api_url (str):          Address of Server, including Port Bsp: http://10.147.17.27:5000
+        player (Player):        Local Instance of ONE remote Player (Raspi or Normal)
+        game (Connect4_remote): Local Instance of remote game (communicates with the server via api calls)
+        sense (SenseHat):       Optional Local Instance of a SenseHat (if on Raspi)
     """
 
     def __init__(self, api_url: str) -> None:
@@ -49,9 +50,8 @@ class Coordinator_Remote:
     
 
 
-    def wait_for_second_player(self):
-        """
-        Waits for the second player to connect.
+    def wait_for_second_player(self) -> None:
+        """Waits for the second player to connect.
 
         This method checks the game status until the second player is detected,
         indicating that the game can start.
@@ -77,8 +77,7 @@ class Coordinator_Remote:
         self.player.visualize()
 
     def play(self):
-        """ 
-        Main function to play the game with two remote players.
+        """ Main function to play the game with two remote players.
 
         This method manages the game loop, where players take turns making moves,
         checks for a winner, and visualizes the game board.
@@ -121,8 +120,6 @@ if __name__ == "__main__":
  [1] - localhost:5000
  [2] - enter url
 """)
-#TODO: save and read adresses from ip_address.json (to quickly reconnect to a server)
-# the reading part of that was already implemented in game_remote.py
     if server_location == "1":
         #api_url = "http://localhost:5000"  # Connect 4 API server URL
         api_url = "http://127.0.0.1:5000"

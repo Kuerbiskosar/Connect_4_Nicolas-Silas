@@ -21,14 +21,21 @@ class Connect4:
             -> executes the methods of a Game object
     """
     
-    def __init__(self, width = 8, height = 7) -> None:
+    def __init__(self, width:int = 8, height:int = 7) -> None:
         """ 
         Init a Connect 4 Game
-            - Create an empty Board
-            - Create two (non - registered and empty) players.
-            - Set the Turn Counter to 0
-            - Set the Winner to False
-            - etc.
+
+        Parameters
+        - width (int) default 8       The width of the connect 4 board
+        - height (int) defalut 7      The height of the connect 4 board
+
+        Attributes:
+        - Board (np array)          height x width numpy array of strings
+        - player_info (Dict)        dictionary with uuid's as strings and tuple with player icon and player name as values
+        - players (list)            list containing the registered players uuid's
+        - activeplayer (int)        the index of the active player in players
+        - turn_counter (int)        which turn it is (-1 = game has not yet started)
+        - winner (uuid/None)        None, when no winner is present. The winners uuid, when the game ended with a winner
         """
         self.board = np.empty((width, height), dtype=str)    # Board 8x7 with zeros representing empty cells
         self.player_info = {}                       # Dictionary to map player UUID to a tuple with icon and name
@@ -46,9 +53,12 @@ class Connect4:
     def get_status(self) -> tuple:
         """
         Get the game's status.
-            - active player (id or icon)
-            - is there a winner? if so who?
-            - what turn is it?
+        Returns
+        - Dictionary with the following Keys
+            - active_player (str)   'X' or 'O' The symbol of the active player in the board
+            - active_id (uuid)      the UUID of the active player
+            - winner (str)          the uuid of the player that won the game
+            - turn_number (int)     the turn Number. -1 if the Game has not jet started
         """
         # TODO: change to follow api specification (currently: icon, winner, turn_counter. should be: icon, uuid, winner, turn_counter)
         # TODO: probably prettier as a dictionary (get values by key)
@@ -64,11 +74,11 @@ class Connect4:
             Save his ID as one of the local players
         
         Parameters:
-            player_id (UUID)    Unique ID
-            name (str)          the Name of the player
+            -  player_id (UUID)    Unique ID
+            -  name (str)          the Name of the player
 
         Returns:
-            icon:       Player Icon (or None if failed)
+            icon (str)       Player Icon for the registering player (or None if failed)
         """
         if len(self.player_info) < 2:
             icon = ''
@@ -95,7 +105,7 @@ class Connect4:
         Return the current board state (For Example an Array of all Elements)
 
         Returns:
-            board
+            board (numpy array of lists of strings)     The game board. board [1,0] is the second collumn on the bottom
         """
         return self.board
 
@@ -105,10 +115,12 @@ class Connect4:
         Check move of a certain player is legal
             If a certain player can make the requested move
             if so, makes the move and returns true
+            id OR icon are required
 
         Parameters:
-            col (int):      Selected Column of Coin Drop
-            player (str):   Player ID 
+            colmn (int):      Selected Column of Coin Drop
+            id (uuid):        Player ID of the move requesting player
+            icon (string):    icon of the move requesting player
         Returns:
             bool    True if the move was valid, false otherwise
         """
@@ -132,7 +144,6 @@ class Connect4:
         """ 
         Update all values for the status (after each successful move)
             - active player
-            - active ID
             - winner
             - turn_number
         """
@@ -146,7 +157,7 @@ class Connect4:
         Detect if someone has won the game (4 consecutive same pieces).
         
         Returns:
-            True if there's a winner, False otherwise
+            bool    True if there's a winner, False otherwise
         """    
         # Active player icon for easier comparison
         icon:str = self.player_info[self.players[self.activeplayer]][0]
@@ -175,48 +186,9 @@ class Connect4:
                         for i in range (4):
                             self.board[x+i, y-i] = icon.lower()
                         return True
-
-
-
-#        # Horizontal Check
-#        for y in range(self.height):
-#            for x in range(self.width - 3):  # Only go as far as possible for 4 in a row
-#                if all(self.board[x + i, y] == icon for i in range(4)):
-#                    self.winner = self.players[self.activeplayer]
-#                    # set the fields to winner fields
-#                    for i in range (4):
-#                        self.board[x+i, y] = icon.lower()
-#                    print(icon.lower)
-#                    return True
-#
-#        # Vertical Check
-#        for x in range(self.width):
-#            for y in range(self.height - 3):  # Only go as far as possible for 4 in a column
-#                if all(self.board[x, y + i] == icon for i in range(4)):
-#                    self.winner = self.players[self.activeplayer]
-#                    return True
-#
-#        # Diagonal Down Check (Top-left to Bottom-right)
-#        for x in range(self.width - 3):
-#            for y in range(self.height - 3):
-#                if all(self.board[x + i, y + i] == icon for i in range(4)):
-#                    self.winner = self.players[self.activeplayer]
-#                    return True
-#
-#        # Diagonal Up Check (Bottom-left to Top-right)
-#        for x in range(self.width - 3):
-#            for y in range(3, self.height):  # Start from y = 3 for upward diagonal
-#                if all(self.board[x + i, y - i] == icon for i in range(4)):
-#                    self.winner = self.players[self.activeplayer]
-#                    return True
-
         # No winner detected
         self.winner = None
         return False
-
-        
-        #raise NotImplementedError(f"You need to write this code first")
-
 
 if __name__ == "__main__":
     myGame = Connect4(8,7)

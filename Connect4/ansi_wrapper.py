@@ -22,12 +22,15 @@ def colorprint(text:str,
                underline:bool=False,
                blink:bool=False,
                ) -> str:
-    """returns the text string formattet to be printed into a terminal"""
+    """
+    returns the text string formattet to be printed into a terminal
+    
+    more elaborate description"""
     #foreground = (3+foreground_bright*6)*10+foreground_color.value # foreground_bright is a bool. if true, 6 will be added to 3
     #background = (4+background_bright*6)*10+background_color.value # normal colors are from 40 to 47, bright from 100 (=(4+6)*10 - 107
     #return(f"\033[{foreground};{background}{";4"*underline+";5"*blink}m{text}\033[0m")
     #return(f"\033[{background};{foreground}{";4"*underline+";5"*blink}m{text}\033[0m")
-    print("\033[=19h")
+    #print("\033[=19h")
     foreground = f"38;5;{foreground_color.value}"
     background = f"48;5;{background_color.value}"
     underline_and_blink = ";4"*underline+";5"*blink
