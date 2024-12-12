@@ -36,71 +36,35 @@ class Player_Raspi_Local(Player_Local):
             self.sense: SenseHat = kwargs["sense"]
         except KeyError:
             raise ValueError(f"{type(self).__name__} requires a 'sense' (SenseHat instance) attribute")
-
-        # TODO: setup other Raspi stuff here
-
     
     def register_in_game(self):
         """
-        Register in game
-            Set Player Icon 
-            Set Player Color
+        Register the player in the game.
+
+        Sets the player's name and icon, and registers the player in the game instance.
+
+        Returns:
+            str: The icon assigned to the player during registration.
         """
         # first do normal register
         #self.icon = super().register_in_game()          # call method of Parent Class (Player_Local)
         self.name = "Raspberry"
         return self.game.register_player(self.id, name=self.name)
 
-        #raise NotImplementedError(f"Override register_in_game of Player_Raspi_Locap")
-
-    
-    def visualize_choice(self, column:int)->None:
-        """ 
-        TODO: remove this function. it is not used anymore
-        Visualize the SELECTION process of choosing a column
-            Toggles the LED on the top row of the currently selected column
-
-        Parameters:
-            column (int):       potentially selected Column during Selection Process
-        """
-        raise NotImplementedError("this function should not be called anymore, because it does not work as intended")
-        # Define colors
-        empty = [55, 55, 55]  # White for empty cells
-        if self.icon == BoardIcon.player1.value:
-            highlight = [255, 255, 0]  # Yellow for Player 1
-        elif self.icon == BoardIcon.player2.value:
-            highlight = [255, 0, 0]  # Red for Player 2
-
-        # Prepare the top row only
-        top_row = [highlight if col == column else empty for col in range(8)]
-
-        # Get the current board visualization
-        board_display = [[empty for _ in range(8)] for _ in range(8)]
-        board = self.game.get_board()
-
-        # Map the game board onto the display
-        icon1 = [255, 255, 0]  # Yellow for Player 1
-        icon2 = [255, 0, 0]  # Red for Player 2
-        for x in range(len(board)):
-            for y in range(len(board[0])):
-                if board[x][y] == BoardIcon.player1.value:
-                    board_display[7 - y][x] = icon1
-                elif board[x][y] == BoardIcon.player2.value:
-                    board_display[7 - y][x] = icon2
-
-        # Replace the top row with the column highlight
-        board_display[0] = top_row
-
-        # Flatten the display array and update the Sense HAT
-        flattened_display = [pixel for row in board_display for pixel in row]
-        print(flattened_display)
-        #self.sense.set_pixels(flattened_display)
-
-
     def visualize(self, fetch_board = True, write_turn = True) -> None:
         """
-        Override Visualization of Local Player
-            Also Visualize on the Raspi 
+        Override the visualization of the local player, also visualizing on the Raspberry Pi.
+
+        This function updates the LED matrix on the Raspberry Pi with the current state of the game board.
+        It highlights the selected column, updates the board with player icons, and shows winning icons 
+        for players if applicable.
+
+        Parameters:
+            fetch_board (bool): If True, fetches the board from the game; otherwise, uses the cached board.
+            write_turn (bool): If True, writes the current player's turn message to the console.
+
+        Returns:
+            None
         """
         # Define colors
         nonboard = [0,0,0] # black for cells above the board
@@ -153,8 +117,6 @@ class Player_Raspi_Local(Player_Local):
         # OPTIONAL: Visualize on CLI
         super().visualize(fetch_board, write_turn)
 
-        #raise NotImplementedError(f" visualize on Raspi not yet implemented")
-
     def get_action(self) -> int:
         """
         Override make_move for Raspberry Pi input using the Sense HAT joystick.
@@ -172,19 +134,11 @@ class Player_Raspi_Local(Player_Local):
                 elif event.direction == 'right':
                     return Action.right
                 elif event.direction == 'middle':
-                    return Action.drop
-            #print(f"events: {events}")
-        #super().make_move()
-        
-        #raise NotImplementedError(f"make_move not yet implemented on Player_Raspi_Local")
-    
+                    return Action.drop  
     
     def celebrate_win(self) -> None:
         """
-        Celebrate CLI Win of Raspi player
-            Override Method of Local Player
+        Celebrate CLI win of Raspberry Pi player.
+            Winning line gets highlighted.
         """
-        # TODO: Own Celebration Method on SenseHat
-
-        # Optional: also do CLI celebration
         super().celebrate_win()

@@ -42,6 +42,7 @@ class Connect4_remote:
         
         Parameters:
             player_id (UUID)    Unique ID
+            name (str)          String
 
         Returns:
             icon:       Player Icon (or None if failed)
@@ -55,10 +56,10 @@ class Connect4_remote:
 
     def get_board(self)-> np.ndarray:
         """ 
-        Return the current board state (For Example an Array of all Elements)
+        Return the current board state
 
         Returns:
-            board
+            board (Array)
         """
         response = requests.get(self.url+"/connect4/board")
         self.__check_response(response)
@@ -72,39 +73,6 @@ class Connect4_remote:
             ]
         )
         return board
-    
-    def check_winner(self):
-        """
-        Check for a winner based on the current board state.
-        """
-        board = self.get_board()
-        rows, cols = len(board), len(board[0])
-
-        def check_direction(start_x, start_y, dx, dy, player):
-            """Check four consecutive cells in a specific direction for the same player."""
-            for i in range(4):
-                x, y = start_x + i * dx, start_y + i * dy
-                if not (0 <= x < rows and 0 <= y < cols and board[x][y] == player):
-                    return False
-            return True
-
-        for x in range(rows):
-            for y in range(cols):
-                player = board[x][y]
-                if player == "":
-                    continue
-                # Check all directions: horizontal, vertical, diagonals
-                if (
-                    check_direction(x, y, 1, 0, player) or  # Horizontal
-                    check_direction(x, y, 0, 1, player) or  # Vertical
-                    check_direction(x, y, 1, 1, player) or  # Diagonal /
-                    check_direction(x, y, 1, -1, player)    # Diagonal \
-                ):
-                    self.winner = player
-                    return player
-
-        self.winner = None
-        return None
 
     def check_move(self, column:int, player_id:uuid) -> bool:
         """ 
@@ -114,11 +82,11 @@ class Connect4_remote:
 
         Parameters:
             col (int):      Selected Column of Coin Drop
-            player (str):   Player ID 
+            player (uuid):   Player ID 
+            
         Returns:
             bool    True if the move was valid, false otherwise
         """
-        #TODO change game and players to check move via uuid instead of icon
         move = {"column":column, "player_id":str(player_id)}
         response = requests.post(self.url+"/connect4/check_move", json=move)
         if response.status_code == 400:
@@ -131,6 +99,22 @@ class Connect4_remote:
         raise RuntimeError(f"Server response not as specified by the api: {response.status_code}")
 
     def __check_response(self, response):
+        """
+        Validate the HTTP response from the server.
+            Checks if the response status code is within the 2xx range.
+            If not, it raises a RuntimeError with a relevant error message.
+
+        Parameters:
+            response (object): HTTP response object, containing attributes 
+                            `status_code` and `json()`.
+
+        Returns:
+            None
+
+        Raises:
+            RuntimeError: Raised if the status code is not in the 2xx range, 
+                        with an appropriate error message.
+        """
         if response.status_code < 200 or response.status_code > 299:
             print(r"a error occurred during server lookup -.- check https://developer.mozilla.org/en-US/docs/Web/HTTP/Status for more information (#notsponsored)")
             try:
