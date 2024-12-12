@@ -20,6 +20,16 @@ else:
                               and https://www.youtube.com/watch?v=GCrfWmaBy6k")
 
 class BoardIcon(Enum):
+    """
+    Represents the icons used on the game board.
+
+    Attributes:
+        empty (str):            Represents an empty cell on the board.
+        player1 (str):          Symbol for Player 1.
+        player2 (str):          Symbol for Player 2.
+        player1_winning (str):  Symbol for Player 1's winning cells, denoted by a lowercase 'x'.
+        player2_winning (str):  Symbol for Player 2's winning cells, denoted by a lowercase 'o'.
+    """
     empty = ''
     player1 = 'X'
     player2 = 'O'
@@ -29,7 +39,14 @@ class BoardIcon(Enum):
     player2_winning = 'o'
 
 class Action(Enum):
-    """represents the possible input actions in a human readable way"""
+    """
+    Represents possible input actions in a human-readable way.
+
+    Attributes:
+        right (int):    Move to the right (value: 0).
+        left (int):     Move to the left (value: 1).
+        drop (int):     Drop a piece into the current column (value: 2).
+    """
     right = 0
     left = 1
     drop = 2
@@ -37,6 +54,29 @@ class Action(Enum):
 # used to decode Windows keycodes
 # should contain the same keys as Windows_Keycodes
 class Linux_Keycodes(Enum):
+    """
+    Represents keycodes for Linux terminal input.
+
+    Attributes:
+        is_special (int):   Leader key (value: 27), which precedes special key sequences.
+        
+        Special Keys (with leader sequence):
+            l_up (int):     Keycode for the up arrow key (value: 65).
+            l_left (int):   Keycode for the left arrow key (value: 68).
+            l_down (int):   Keycode for the down arrow key (value: 66).
+            l_right (int):  Keycode for the right arrow key (value: 67).
+
+        Keys without a leader:
+            abort (int):    Keycode for the abort key, using Tab (value: 9) instead of Ctrl+C.
+            esc (int):      Keycode for Esc, replaced by Tab (value: 9) due to conflict with leader key.
+            enter (int):    Keycode for the Enter key (value: 10).
+
+        Alpha Keys:
+            w (int): Keycode for 'W' (value: 119).
+            a (int): Keycode for 'A' (value: 97).
+            s (int): Keycode for 'S' (value: 115).
+            d (int): Keycode for 'D' (value: 100).
+    """
     is_special = 27 #leader NOTE: after this another byte is send, that is part of the leader, that's why esc can't be used
     #the following keys are lead with a leaderKey
     l_up = 65 #up arrow
@@ -58,7 +98,29 @@ class Linux_Keycodes(Enum):
 # used to decode Windows keycodes
 # should contain the same keys as Linux_Keycodes
 class Windows_Keycodes(Enum):
-    """abstracting the special keycodes of special keys. keys that send the is_special key first are marked with l_<Key name>"""
+    """
+    Represents keycodes for Windows terminal input.
+
+    Attributes:
+        is_special (int):   Leader key (value: 224) used for arrow keys and navigation block keys.
+        
+        Special Keys (with leader sequence):
+            l_up (int):     Keycode for the up arrow key (value: 72).
+            l_left (int):   Keycode for the left arrow key (value: 75).
+            l_down (int):   Keycode for the down arrow key (value: 80).
+            l_right (int):  Keycode for the right arrow key (value: 77).
+
+        Keys without a leader:
+            abort (int):    Keycode for the abort command (Ctrl+C, value: 3).
+            esc (int):      Keycode for the Esc key (value: 27).
+            enter (int):    Keycode for the Enter key (value: 13).
+
+        Alpha Keys:
+            w (int): Keycode for 'W' (value: 119).
+            a (int): Keycode for 'A' (value: 97).
+            s (int): Keycode for 'S' (value: 115).
+            d (int): Keycode for 'D' (value: 100).
+    """
     is_special = 224 # leader for arrow keys and the navigation block
     #the following keys are lead with a leaderKey
     l_up = 72
@@ -87,12 +149,15 @@ class Player_Local(Player):
     def __init__(self, game:Connect4, **kwargs) -> None:
         """ 
         Initialize a local player.
-            Must Implement all Methods from Abstract Player Class
+            Implements all methods required by the Abstract Player class.
 
         Parameters:
-            game (Connect4): Instance of Connect4 game passed through kwargs.
-        
-       
+            game (Connect4): Instance of the Connect4 game to which the player is linked.
+
+        Attributes:
+            game (Connect4): Stores the provided Connect4 game instance.
+            icon (str): The player's icon, assigned during registration in the game.
+            board (list or None): Variable to store the game board locally, reducing server calls.
         """
         super().__init__()  # Initialize id and icon from the abstract Player class
         self.game = game
@@ -105,7 +170,7 @@ class Player_Local(Player):
         Register the player in the game and assign the player an icon.
 
         Returns:
-            str: The player's icon.
+            str: The icon assigned to the player during registration.
         """
         self.name = input("Enter your name: ")
         return self.game.register_player(self.id, self.name)
@@ -125,17 +190,33 @@ class Player_Local(Player):
 
     def get_game_status(self):
         """
-        Get the game's current status.
-            - who is the active player?
-            - is there a winner? if so who?
-            - what turn is it?
-      
+        Get the current status of the game.
+
+        Returns:
+            dict: A dictionary containing the following keys:
+                - "active_player" (str): Name of the active player.
+                - "active_id" (str): ID of the active player.
+                - "winner" (str or None): The winner of the game, or None if there is no winner yet.
+                - "turn_number" (int): The current turn number.
         """
         return self.game.get_status()
 
 
     def get_action(self) -> Action:
-        """reads input from the user, until the keypress corresponds to a action in the game"""
+        """
+        Reads input from the user until a valid action for the game is detected.
+
+        Continuously monitors user input for specific key presses that correspond to
+        actions within the game (such as moving left, right, or dropping a piece).
+        The function differentiates between Linux and Windows keycodes and handles
+        special keys, including combinations like the arrow keys and other control inputs.
+
+        Returns:
+            Action: The action corresponding to the user's input, such as `Action.left`, 
+                    `Action.right`, or `Action.drop`.
+
+        Exits the program if Ctrl+C (abort) is pressed.
+        """
         # gets user input until a key that does something is pressed
         while True:
             user_input = getch()
@@ -192,12 +273,15 @@ class Player_Local(Player):
     def visualize(self, fetch_board = True, write_turn = True) -> None:
         """
         Visualize the current state of the Connect 4 board by printing it to the console.
+
         Parameters:
-        - fetch_board
-            if True or if no board was fetched before, the function calls game.get_board()
-            used to reduce server calls
-        - write_turn
-            if True, write who's turn it is. (Should not be written, when the game ended)
+            fetch_board (bool): If True (or if no board was fetched before), the function calls `game.get_board()` to retrieve the latest board state.
+                                Defaults to True. Used to reduce server calls.
+            write_turn (bool):  If True, displays a message indicating whose turn it is.
+                                Defaults to True. Should not be shown after the game ends.
+
+        Returns:
+            None
         """
         if fetch_board or self.board is None:
             board = self.game.get_board()
@@ -256,11 +340,13 @@ class Player_Local(Player):
             print("select in which row you want to place your coin, by pressing <a>/<d> or <right arrow> / <Left arrow>")
         else:
             print("waiting for the opponent to play")
-        #print(myIcon)
 
     def celebrate_win(self) -> None:
         """
         Celebration of Local CLI Player
+
+        Returns:
+            None
         """
         self.drop_position = -1
         self.visualize(write_turn=False)
@@ -271,12 +357,6 @@ def main():
     input("You are running the file player_local for debug purposes.")
     game = Connect4(7,6)
     player1 = Player_Local(game)
-    #print(player1.make_move())
-    #board = np.zeros((8,7))
-    #player1.visualize(board)
-    #board[1,0] = 1
-    #board[1][1] = 2
-    #player1.visualize(board,useAscii=True)
 
 """test the class"""
 if __name__ == "__main__":
